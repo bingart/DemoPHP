@@ -1,4 +1,7 @@
 <?php
+/* ********************************************** */
+/* This file is used for crawler to load url list */
+/* ********************************************** */
 
 $mysqli = new mysqli('localhost', 'root', '', 'art');
 if ($mysqli->connect_errno) {
