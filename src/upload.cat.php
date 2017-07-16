@@ -33,6 +33,7 @@ $s2 = substr($name, 2, 1);
 $rootPath = "E:/Site";
 
 $folder = $rootPath . '/' . $s0 . '/' . $s1 . '/' . $s2;
+$folder = $rootPath;
 echo 'folder=' . $folder . '\r\n';
 if (!file_exists($folder)) {
 	mkdir($folder, 0777, true);
