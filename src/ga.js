@@ -6,5 +6,5 @@ ga javascript
   m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
   })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
 
-  ga('create', 'UA-100358239-1', 'auto');
+  ga('create', 'UA-104181012-1', 'auto');
   ga('send', 'pageview');
