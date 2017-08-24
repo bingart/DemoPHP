@@ -3,6 +3,11 @@
 /* This file is used to upload page html files */
 /* ********************************************** */
 
+// ##########################################
+// ########### ROOT PATH ####################
+// ##########################################
+$rootPath = "E:/Site";
+
 // $body = file_get_contents('php://input');
 $body = '';
 $fh   = @fopen('php://input', 'r');
@@ -30,7 +35,6 @@ echo 'content.len=' . strlen($content) . '\r\n';
 $s0 = substr($name, 0, 1);
 $s1 = substr($name, 1, 1);
 $s2 = substr($name, 2, 1);
-$rootPath = "E:/Site";
 
 $folder = $rootPath . '/' . $s0 . '/' . $s1 . '/' . $s2;
 $folder = $rootPath;
