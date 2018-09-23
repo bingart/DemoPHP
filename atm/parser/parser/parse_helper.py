@@ -2,6 +2,7 @@
 
 import re
 from bs4 import BeautifulSoup
+from file_helper import FileHelper
 from str_helper import StrHelper
 from nlp_helper import NLPHelper
 
@@ -213,5 +214,15 @@ if __name__=="__main__":
     title = "abc Hello 123 &$#"
     slug = ParseHelper.title2slug(title)
     print (slug)
+    
+    html = FileHelper.readContent('./resource/wp_class_content.html')
+    content = ParseHelper.parseWordPressContent(html)
+    if content != None:
+        print(len(content))
+
+    html = FileHelper.readContent('./resource/wp_id_content.html')
+    content = ParseHelper.parseWordPressContent(html)
+    if content != None:
+        print(len(content))
 
         
