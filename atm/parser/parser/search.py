@@ -99,7 +99,7 @@ def searchPage():
                     continue
                 
                 pageList = []
-                for offset in [0, 20]:
+                for offset in [0, 20, 40]:
                     url = SEARCH_PATTERN.format(doc['title'], offset, 20)
                     errorCode, response = HttpHelper.get(url)
                     if errorCode != 'OK' or response == None or (not 'webPages' in response):

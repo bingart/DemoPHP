@@ -203,9 +203,9 @@ class ParseHelper:
         if (len(divList) == 1):
             return str(divList[0])
 
-        divList = soup.select("div.content")
-        if (len(divList) == 1):
-            return str(divList[0])
+#         divList = soup.select("div.content")
+#         if (len(divList) == 1):
+#             return str(divList[0])
 
         return None
 
