@@ -8,6 +8,7 @@ from file_helper import FileHelper
 from mongo_helper import MongoHelper
 from http_helper import HttpHelper
 from url_helper import UrlHelper
+from parse_helper import ParseHelper
 
 MONGO_HOST = "172.16.40.128:27017,172.16.40.140:27017,172.16.40.141:27017"
 MONGO_DATABASE_NAME = "ZDBAmazon"
@@ -15,6 +16,11 @@ MONGO_KEY_COLLECTION = "key"
 MONGO_PAGE_COLLECTION = "page"
 MONGO_TARGET_COLLECTION = "target"
 SEARCH_PATTERN = 'http://healthtopquestions.com/wp-content/plugins/post-tester/bingapi.php?token=P@ssw0rd&t=web&q={0}&offset={1}&count={2}'
+ROOT_PATH = 'E:/NutchData/pages/wpm'
+
+keyCollection = MongoHelper(MONGO_HOST, 27017, MONGO_DATABASE_NAME, MONGO_KEY_COLLECTION, "title")
+pageCollection = MongoHelper(MONGO_HOST, 27017, MONGO_DATABASE_NAME, MONGO_PAGE_COLLECTION, "url")
+    
 
 def loadKey():
     keyList = []
@@ -23,11 +29,10 @@ def loadKey():
         key = line.strip()
         keyList.append(key)
     
-    collection = MongoHelper(MONGO_HOST, 27017, MONGO_DATABASE_NAME, MONGO_KEY_COLLECTION, "title")
     for key in keyList:
-        old = collection.findOneByFilter({'title', key})
+        old = keyCollection.findOneByFilter({'title', key})
         if old == None:
-            collection.insertOne({
+            keyCollection.insertOne({
                 'title': key,
                 'state': 'CREATED',
                 'level': 0,
@@ -35,8 +40,6 @@ def loadKey():
             })
         
 def searchKey():
-    keyCollection = MongoHelper(MONGO_HOST, 27017, MONGO_DATABASE_NAME, MONGO_KEY_COLLECTION, "title")
-    
     try:
         total = 0
         while True:
@@ -84,9 +87,6 @@ def searchKey():
         print(err)    
 
 def searchPage():
-    keyCollection = MongoHelper(MONGO_HOST, 27017, MONGO_DATABASE_NAME, MONGO_KEY_COLLECTION, "title")
-    pageCollection = MongoHelper(MONGO_HOST, 27017, MONGO_DATABASE_NAME, MONGO_PAGE_COLLECTION, "url")
-    
     try:
         total = 0
         while True:
@@ -99,7 +99,6 @@ def searchPage():
                     continue
                 
                 pageList = []
-                
                 for offset in [0, 20]:
                     url = SEARCH_PATTERN.format(doc['title'], offset, 20)
                     errorCode, response = HttpHelper.get(url)
@@ -120,12 +119,17 @@ def searchPage():
                                 'state': 'CREATED',
                                 'key': doc['title']
                             }
-                        
+                
                 if len(pageList) > 0:
+                    insertList = []
                     for page in pageList:
-                        if pageCollection.queryOneByFilter({'url': page['url']}) == None:
-                            pageCollection.insertOne(page)
-    
+                        old = pageCollection.queryOneByFilter({'url', page['url']})
+                        if old == None:
+                            insertList.append(page)
+                    
+                    pageCollection.insertMany(insertList)
+                    
+                    doc['pageList'] = pageList
                     doc['state'] = 'PAGED'
                     keyCollection.updateOne(doc)
 
@@ -137,7 +141,44 @@ def searchPage():
     except Exception as err :
         print(err)    
 
+def parsePage():
+    try:
+        total = 0
+        while True:
+            docList = pageCollection.nextPage(20)
+            if docList == None or len(docList) == 0:
+                break
+
+            for doc in docList:
+                if doc['state'] == 'PARSED':
+                    continue
+
+                fileName, finalUrl = HttpHelper.fetchAndSave(doc['url'], ROOT_PATH, 'utf-8', 2)
+                if fileName == None:
+                    doc['state'] = 'CLOSED'
+                    pageCollection.updateOne(doc)
+                    continue
+                    
+                filePath = HttpHelper.getFullPath(ROOT_PATH, fileName, 2)
+                html = FileHelper.readContent(filePath)
+                content = ParseHelper.parseWordPressContent(html)
+                if content != None:
+                    doc['content'] = content
+                    doc['state'] = 'PARSED'
+                else:
+                    doc['state'] = 'CLOSED'
+
+                total += 1
+                print ('total=' + str(total))
+                
+                time.sleep(1)
+    
+    except Exception as err :
+        print(err)    
+    
+
 if __name__=="__main__":
     loadKey()
     searchKey()
     searchPage()
+    parsePage()

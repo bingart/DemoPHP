@@ -72,4 +72,5 @@ class MongoHelper:
     def updateOne(self, doc):
         theId = doc['_id']
         return self.collection.find_one_and_replace({'_id': theId}, doc)
+
         

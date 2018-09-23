@@ -191,6 +191,23 @@ class ParseHelper:
         }
         return [found, doc]
 
+    @staticmethod
+    def parseWordPressContent(html):
+        soup = BeautifulSoup(html)    
+        scripts = soup.findAll(['script', 'style', 'iframe'])
+        for match in scripts:
+            match.decompose()
+            
+        divList = soup.select("div#content")
+        if (len(divList) == 1):
+            return str(divList[0])
+
+        divList = soup.select("div.content")
+        if (len(divList) == 1):
+            return str(divList[0])
+
+        return None
+
 if __name__=="__main__":
     print("main")
     title = "abc Hello 123 &$#"
