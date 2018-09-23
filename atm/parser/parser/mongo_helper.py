@@ -1,12 +1,10 @@
 # coding=utf-8
 from pymongo import MongoClient
 from pymongo import ASCENDING, DESCENDING
-from log_helper import LogHelper
 
 class MongoHelper:
     
     def __init__(self, host, port, dbName, collectionName, indexName = None):
-        LogHelper.log("created")
         self.host = host
         self.port = port
         self.client = MongoClient(host, port)
@@ -17,6 +15,9 @@ class MongoHelper:
         
         if self.indexName != None:
             self.collection.create_index(self.indexName)
+    
+    def createIndex(self, indexFieldName):    
+        self.collection.create_index(self.indexName)
             
     def count(self, theFilter):
         if filter == None:

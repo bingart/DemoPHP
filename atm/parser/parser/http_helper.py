@@ -3,12 +3,11 @@ import requests
 import hashlib
 import os
 import json
-from log_helper import LogHelper
 
 class HttpHelper:
     
     def __init__(self):
-        LogHelper.log("created")
+        print ('init')
 
     @staticmethod
     def fetchWithHost(url, host, encoding="utf-8", theTimeOut=(30, 30)):

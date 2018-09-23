@@ -2,13 +2,12 @@
 
 import re
 import string
-from log_helper import LogHelper
 import pylev
 
 class StrHelper:
     
     def __init__(self):
-        LogHelper.log("created")
+        print("created")
     
     @staticmethod
     def split(inputStr, segLen, sep):
@@ -108,8 +107,6 @@ if __name__=="__main__":
     distance = StrHelper.getLevDistance(src, dst)
     print (distance)
     print (distance/len(src))
-    
-    
     
     print("exit")
     
