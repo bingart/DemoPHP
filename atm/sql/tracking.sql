@@ -5,5 +5,5 @@ CREATE TABLE `tracking` (
   `uip` varchar(32) NOT NULL,
   `referer` varchar(256) NULL,
   `createTime` datetime NOT NULL,
-  PRIMARY KEY (`id`),
+  PRIMARY KEY (`id`)
 ) ENGINE=MyISAM AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
