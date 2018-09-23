@@ -1,0 +1,430 @@
+{
+	"_type": "SearchResponse",
+	"instrumentation": {
+		"pingUrlBase": "https:\/\/www.bingapis.com\/api\/ping?IG=C1E875F12601462294F5C279D1F7921F&CID=3950C6BB4030686A2BF2CD2F41F0690B&ID=",
+		"pageLoadPingUrl": "https:\/\/www.bingapis.com\/api\/ping\/pageload?IG=C1E875F12601462294F5C279D1F7921F&CID=3950C6BB4030686A2BF2CD2F41F0690B&Type=Event.CPT&DATA=0"
+	},
+	"webPages": {
+		"webSearchUrl": "https:\/\/www.bing.com\/search?q=health",
+		"webSearchUrlPingSuffix": "DevEx,5652.1",
+		"totalEstimatedMatches": 73000000,
+		"value": [{
+			"id": "https:\/\/www.bingapis.com\/api\/v5\/#WebPages.0",
+			"name": "Health - Official Site",
+			"url": "http:\/\/www.health.com\/",
+			"urlPingSuffix": "DevEx,5102.1",
+			"about": [{
+				"name": "Health"
+			}, {
+				"name": "Health"
+			}],
+			"displayUrl": "www.health.com",
+			"snippet": "Get energizing workout moves, healthy recipes, and advice on losing weight and feeling great from Health.com. Find out how to manage diabetes and depression, prevent ...",
+			"deepLinks": [{
+				"name": "Recipes",
+				"url": "http:\/\/www.health.com\/recipes",
+				"urlPingSuffix": "DevEx,5091.1"
+			}, {
+				"name": "Weight Loss",
+				"url": "http:\/\/www.health.com\/weight-loss",
+				"urlPingSuffix": "DevEx,5092.1"
+			}, {
+				"name": "Diseases & Conditions",
+				"url": "http:\/\/www.health.com\/diseases-conditions",
+				"urlPingSuffix": "DevEx,5093.1"
+			}, {
+				"name": "Contact Us",
+				"url": "http:\/\/www.health.com\/service\/contact-us",
+				"urlPingSuffix": "DevEx,5094.1"
+			}, {
+				"name": "Fitness",
+				"url": "http:\/\/www.health.com\/fitness",
+				"urlPingSuffix": "DevEx,5095.1"
+			}, {
+				"name": "Food",
+				"url": "http:\/\/www.health.com\/food",
+				"urlPingSuffix": "DevEx,5096.1"
+			}],
+			"dateLastCrawled": "2018-03-03T09:21:00"
+		}, {
+			"id": "https:\/\/www.bingapis.com\/api\/v5\/#WebPages.1",
+			"name": "WebMD - Better information. Better health.",
+			"url": "https:\/\/www.webmd.com\/default.htm",
+			"urlPingSuffix": "DevEx,5119.1",
+			"about": [{
+				"name": "WebMD"
+			}],
+			"displayUrl": "https:\/\/www.webmd.com\/default.htm",
+			"snippet": "The leading source for trustworthy and timely health and medical news and information. Providing credible health information, supportive community, and educational ...",
+			"dateLastCrawled": "2018-03-07T11:58:00"
+		}, {
+			"id": "https:\/\/www.bingapis.com\/api\/v5\/#WebPages.2",
+			"name": "HealthCare.gov - Official Site",
+			"url": "https:\/\/www.healthcare.gov\/",
+			"urlPingSuffix": "DevEx,5147.1",
+			"about": [{
+				"name": "HealthCare.gov"
+			}],
+			"displayUrl": "https:\/\/www.healthcare.gov",
+			"snippet": "Official site of Affordable Care Act. Enroll now for 2018 coverage. See health coverage choices, ways to save today, how law affects you.",
+			"dateLastCrawled": "2018-03-03T13:04:00"
+		}, {
+			"id": "https:\/\/www.bingapis.com\/api\/v5\/#WebPages.3",
+			"name": "Health | Time",
+			"url": "http:\/\/time.com\/section\/health\/",
+			"urlPingSuffix": "DevEx,5164.1",
+			"about": [{
+				"name": "Time"
+			}],
+			"displayUrl": "time.com\/section\/health",
+			"snippet": "Read the latest stories about Health on Time. Read the latest stories about Health on Time. Read the latest stories about Health on Time. Health. Subscribe; U.S.",
+			"dateLastCrawled": "2018-03-03T03:14:00"
+		}, {
+			"id": "https:\/\/www.bingapis.com\/api\/v5\/#WebPages.4",
+			"name": "Forbes - Health Information and Health News - Forbes.com",
+			"url": "https:\/\/www.forbes.com\/health\/",
+			"urlPingSuffix": "DevEx,5181.1",
+			"about": [{
+				"name": "Health"
+			}],
+			"displayUrl": "https:\/\/www.forbes.com\/health",
+			"snippet": "Forbes is a leading source for reliable news and updated analysis on Health. Read the breaking Health coverage and top headlines on Forbes.com",
+			"dateLastCrawled": "2018-03-02T07:57:00"
+		}, {
+			"id": "https:\/\/www.bingapis.com\/api\/v5\/#WebPages.5",
+			"name": "Pennsylvania Department of Health - Official Site",
+			"url": "http:\/\/www.health.pa.gov\/",
+			"urlPingSuffix": "DevEx,5198.1",
+			"displayUrl": "www.health.pa.gov",
+			"snippet": "Officials Provide Update on Governor Wolf’s Opioid Disaster Declaration Progress; Wolf Administration Discusses Impacts of Eating Disorders, Recognizes ...",
+			"dateLastCrawled": "2018-03-03T05:28:00"
+		}, {
+			"id": "https:\/\/www.bingapis.com\/api\/v5\/#WebPages.6",
+			"name": "Health Information - Health.com: Fitness, Nutrition, Tools ...",
+			"url": "http:\/\/www.health.com\/health\/",
+			"urlPingSuffix": "DevEx,5212.1",
+			"displayUrl": "www.health.com\/health",
+			"snippet": "Moved Permanently. Redirecting to \/health",
+			"dateLastCrawled": "2018-02-20T02:09:00"
+		}, {
+			"id": "https:\/\/www.bingapis.com\/api\/v5\/#WebPages.7",
+			"name": "New York State Department of Health - Official Site",
+			"url": "https:\/\/www.health.ny.gov\/",
+			"urlPingSuffix": "DevEx,5227.1",
+			"about": [{
+				"name": "New York State Department of Health"
+			}, {
+				"name": "New York State Department of Health"
+			}],
+			"displayUrl": "https:\/\/www.health.ny.gov",
+			"snippet": "Home page for the New York State Department of Health",
+			"dateLastCrawled": "2018-03-02T08:23:00"
+		}, {
+			"id": "https:\/\/www.bingapis.com\/api\/v5\/#WebPages.8",
+			"name": "Health Net - Official Site",
+			"url": "http:\/\/www.healthnet.com\/",
+			"urlPingSuffix": "DevEx,5243.1",
+			"about": [{
+				"name": "Health Net"
+			}, {
+				"name": "Health Net"
+			}],
+			"displayUrl": "www.healthnet.com",
+			"snippet": "Health Net provides health insurance coverage for individuals, families, small business, large groups and Medicare Advantage recipients. Sign up today!",
+			"dateLastCrawled": "2018-03-02T05:46:00"
+		}, {
+			"id": "https:\/\/www.bingapis.com\/api\/v5\/#WebPages.9",
+			"name": "Health - tn.gov",
+			"url": "https:\/\/www.tn.gov\/health.html",
+			"urlPingSuffix": "DevEx,5256.1",
+			"about": [{
+				"name": "Veterans Health Administration"
+			}],
+			"displayUrl": "https:\/\/www.tn.gov\/health.html",
+			"snippet": "Welcome to The Tennessee Department of Health Mission: Protect, promote and improve the health and prosperity of people in Tennessee.",
+			"dateLastCrawled": "2018-03-02T00:56:00"
+		}, {
+			"id": "https:\/\/www.bingapis.com\/api\/v5\/#WebPages.10",
+			"name": "Health - nyc.gov",
+			"url": "http:\/\/www1.nyc.gov\/site\/doh\/index.page",
+			"urlPingSuffix": "DevEx,5271.1",
+			"about": [{
+				"name": "New York City Department of Health and Mental Hygiene"
+			}, {
+				"name": "New York City Department of Health and Mental Hygiene"
+			}],
+			"displayUrl": "www1.nyc.gov\/site\/doh\/index.page",
+			"snippet": "Sign up for a free Mental Health First Aid training to learn how you can identify and respond to early signs and symptoms of mental health challenges, such as ...",
+			"dateLastCrawled": "2018-03-03T01:53:00"
+		}, {
+			"id": "https:\/\/www.bingapis.com\/api\/v5\/#WebPages.11",
+			"name": "Health | USAGov",
+			"url": "https:\/\/www.usa.gov\/health",
+			"urlPingSuffix": "DevEx,5288.1",
+			"displayUrl": "https:\/\/www.usa.gov\/health",
+			"snippet": "Child Care and Related Issues. Find resources about adoption, kinship care and other child and teenager-related situations. Doctors and Medical Facilities",
+			"dateLastCrawled": "2018-03-02T12:53:00"
+		}, {
+			"id": "https:\/\/www.bingapis.com\/api\/v5\/#WebPages.12",
+			"name": "Health | Yahoo News - Latest News & Headlines",
+			"url": "https:\/\/www.yahoo.com\/news\/tagged\/health\/",
+			"urlPingSuffix": "DevEx,5304.1",
+			"about": [{
+				"name": "Yahoo! News"
+			}],
+			"displayUrl": "https:\/\/www.yahoo.com\/news\/tagged\/health",
+			"snippet": "The latest news and headlines from Yahoo! News. Get breaking news stories and in-depth coverage with videos and photos.",
+			"dateLastCrawled": "2018-03-03T03:26:00"
+		}, {
+			"id": "https:\/\/www.bingapis.com\/api\/v5\/#WebPages.13",
+			"name": "KidsHealth - Official Site",
+			"url": "http:\/\/kidshealth.org\/",
+			"urlPingSuffix": "DevEx,5320.1",
+			"displayUrl": "kidshealth.org",
+			"snippet": "KidsHealth is the #1 most-trusted source for physician-reviewed information and advice on children's health and parenting issues. For parents, kids, teens, and ...",
+			"dateLastCrawled": "2018-03-03T14:02:00"
+		}, {
+			"id": "https:\/\/www.bingapis.com\/api\/v5\/#WebPages.14",
+			"name": "Verywell - Official Site",
+			"url": "https:\/\/www.verywell.com\/",
+			"urlPingSuffix": "DevEx,5337.1",
+			"displayUrl": "https:\/\/www.verywell.com",
+			"snippet": "Verywell is your destination for reliable, understandable, and credible health information and expert advice that always keeps why you came to us in mind.",
+			"dateLastCrawled": "2018-03-03T04:53:00"
+		}, {
+			"id": "https:\/\/www.bingapis.com\/api\/v5\/#WebPages.15",
+			"name": "Minnesota Department of Health",
+			"url": "http:\/\/www.health.state.mn.us\/",
+			"urlPingSuffix": "DevEx,5352.1",
+			"displayUrl": "www.health.state.mn.us",
+			"snippet": "Information for health professionals and citizens, including state health statistics, prevention and health promotion, and health care and health-related professions.",
+			"dateLastCrawled": "2018-03-01T10:28:00"
+		}, {
+			"id": "https:\/\/www.bingapis.com\/api\/v5\/#WebPages.16",
+			"name": "Washington State Department of Health - Official Site",
+			"url": "http:\/\/www.doh.wa.gov\/",
+			"urlPingSuffix": "DevEx,5367.1",
+			"about": [{
+				"name": "Washington State Department of Health"
+			}, {
+				"name": "Washington State Department of Health"
+			}],
+			"displayUrl": "www.doh.wa.gov",
+			"snippet": "Main portal for the Washington State Department of Health. Links to all other content and information about DOH programs.",
+			"dateLastCrawled": "2018-03-04T01:10:00"
+		}, {
+			"id": "https:\/\/www.bingapis.com\/api\/v5\/#WebPages.17",
+			"name": "Arkansas Department of Health - Official Site",
+			"url": "http:\/\/www.healthy.arkansas.gov\/",
+			"urlPingSuffix": "DevEx,5382.1",
+			"displayUrl": "www.healthy.arkansas.gov",
+			"snippet": "Public Health Safety. Check for inspection reports, diseases from animals and insects, clean air and water, safety topics and more…",
+			"dateLastCrawled": "2018-03-01T21:13:00"
+		}, {
+			"id": "https:\/\/www.bingapis.com\/api\/v5\/#WebPages.18",
+			"name": "National Institutes of Health (NIH) | Turning Discovery ...",
+			"url": "https:\/\/www.nih.gov\/",
+			"urlPingSuffix": "DevEx,5398.1",
+			"about": [{
+				"name": "National Institutes of Health"
+			}],
+			"displayUrl": "https:\/\/www.nih.gov",
+			"snippet": "Official website of the National Institutes of Health (NIH). NIH is one of the world's foremost medical research centers. An agency of the U.S. Department of Health ...",
+			"dateLastCrawled": "2018-03-03T04:57:00"
+		}, {
+			"id": "https:\/\/www.bingapis.com\/api\/v5\/#WebPages.19",
+			"name": "Your Source for Reliable Health Information - healthfinder.gov",
+			"url": "http:\/\/healthfinder.gov\/",
+			"urlPingSuffix": "DevEx,5414.1",
+			"displayUrl": "healthfinder.gov",
+			"snippet": "A Federal Government website managed by the U.S. Department of Health and Human Services healthfinder.gov is sponsored by the National Health Information Center 200 ...",
+			"dateLastCrawled": "2018-03-03T12:24:00"
+		}]
+	},
+	"news": {
+		"id": "https:\/\/www.bingapis.com\/api\/v5\/#News",
+		"readLink": "https:\/\/www.bingapis.com\/api\/v5\/news\/search?q=Health",
+		"value": [{
+			"name": "Trump uses page from 'smart policymaking 101' on health care",
+			"url": "http:\/\/abcnews.go.com\/Health\/wireStory\/trump-page-smart-policymaking-101-health-care-53654302",
+			"urlPingSuffix": "DevEx,5477.1",
+			"image": {
+				"contentUrl": "https:\/\/s.abcnews.com\/images\/Health\/WireAP_02e8e10920c049db8939b6e88ad6ba73_12x5_992.jpg",
+				"thumbnail": {
+					"contentUrl": "https:\/\/www.bing.com\/th?id=ON.AD5471F216C75D480A11EB78CBD7D1B4&pid=News",
+					"width": 700,
+					"height": 291
+				}
+			},
+			"description": "A smartphone app that lets Medicare patients access their claims information. Giving consumers a share of drug company rebates for their prescriptions. Wider access to websites that reliably compare cost and quality of medical tests. The Trump ...",
+			"about": [{
+				"readLink": "https:\/\/www.bingapis.com\/api\/v5\/entities\/1a466af2-ed23-25bd-794d-1ca925e4681b",
+				"name": "Donald Trump"
+			}],
+			"provider": [{
+				"_type": "Organization",
+				"name": "ABC News"
+			}],
+			"datePublished": "2018-03-10T22:24:00",
+			"category": "Health"
+		}, {
+			"name": "Dr. Marc Siegel: Alex Azar, the new Health and Human Services secretary, has ideas to improve your health care",
+			"url": "http:\/\/www.foxnews.com\/opinion\/2018\/03\/10\/dr-marc-siegel-alex-azar-new-health-and-human-services-secretary-has-ideas-to-improve-your-health-care.html",
+			"urlPingSuffix": "DevEx,5481.1",
+			"image": {
+				"contentUrl": "http:\/\/a57.foxnews.com\/images.foxnews.com\/content\/fox-news\/opinion\/2018\/03\/10\/dr-marc-siegel-alex-azar-new-health-and-human-services-secretary-has-ideas-to-improve-your-health-care\/_jcr_content\/par\/featured_image\/media-0.img.jpg\/0\/0\/1520706093705.jpg?ve=1",
+				"thumbnail": {
+					"contentUrl": "https:\/\/www.bing.com\/th?id=ON.8445C2321CF97188D7E67AE0F2BC50E1&pid=News",
+					"width": 700,
+					"height": 393
+				}
+			},
+			"description": "Under the current system, getting information about your own health care and the care your children get can be challenging and confusing. What’s in your medical records? How do you even get access to them? How do you understand what all the strange ...",
+			"about": [{
+				"readLink": "https:\/\/www.bingapis.com\/api\/v5\/entities\/7ce22761-aee3-c480-8e68-afb1848c6d90",
+				"name": "Alex Azar"
+			}, {
+				"readLink": "https:\/\/www.bingapis.com\/api\/v5\/entities\/3e8d9968-4fd0-43c3-8550-6192ac6ae16e",
+				"name": "Marc Siegel"
+			}],
+			"provider": [{
+				"_type": "Organization",
+				"name": "Fox News",
+				"image": {
+					"thumbnail": {
+						"contentUrl": "https:\/\/www.bing.com\/th?id=AR_7dc0f55e947bdbc51189eb1a022e9eb6&pid=news"
+					}
+				}
+			}],
+			"datePublished": "2018-03-10T21:02:00",
+			"category": "Health"
+		}, {
+			"name": "Riding the waves to better health: Navy studies the therapeutic value of surfing.",
+			"url": "https:\/\/www.washingtonpost.com\/national\/health-science\/riding-the-waves-to-better-health-navy-studies-the-therapeutic-value-of-surfing\/2018\/03\/09\/254df9e2-06ca-11e8-94e8-e8b8600ade23_story.html",
+			"urlPingSuffix": "DevEx,5483.1",
+			"image": {
+				"contentUrl": "https:\/\/www.washingtonpost.com\/resizer\/EZZxSZB1MERl0fFsP8vbnIM5RiQ=\/1484x0\/arc-anglerfish-washpost-prod-washpost.s3.amazonaws.com\/public\/6M4G76BAZII6RFDMSQQAMDFXXU.jpg",
+				"thumbnail": {
+					"contentUrl": "https:\/\/www.bing.com\/th?id=ON.8E94F6817DABCD28A54EDCEB90FC638C&pid=News",
+					"width": 700,
+					"height": 497
+				}
+			},
+			"description": "In song and prose, surfing has long been celebrated as a way to soothe the mind and invigorate the body. But scientific evidence has been limited. Now the Navy has embarked on a $1 million research project to determine whether surfing has therapeutic value ...",
+			"about": [{
+				"readLink": "https:\/\/www.bingapis.com\/api\/v5\/entities\/b7378b9c-05de-5bee-c7bb-b55b8b5b4a62",
+				"name": "Surfing"
+			}],
+			"provider": [{
+				"_type": "Organization",
+				"name": "The Washington Post",
+				"image": {
+					"thumbnail": {
+						"contentUrl": "https:\/\/www.bing.com\/th?id=AR_04bc0c1c424cf64dec14a2982f0360ef&pid=news"
+					}
+				}
+			}],
+			"datePublished": "2018-03-10T15:00:00",
+			"category": "Health"
+		}, {
+			"name": "5 ways daylight saving time messes with your health – and what to do about it",
+			"url": "https:\/\/www.cbsnews.com\/news\/daylight-saving-time-affects-your-health-wellness\/",
+			"urlPingSuffix": "DevEx,5485.1",
+			"image": {
+				"contentUrl": "https:\/\/cbsnews1.cbsistatic.com\/hub\/i\/r\/2018\/03\/08\/917dc34a-d3ff-4c18-8651-eee4971f311e\/thumbnail\/620x350\/7e2fb0dbaf7d1b5be87d82d3d593e438\/istock-494238613.jpg#",
+				"thumbnail": {
+					"contentUrl": "https:\/\/www.bing.com\/th?id=ON.82201BAAF6C0886A04AEB7F8DA33F22C&pid=News",
+					"width": 620,
+					"height": 350
+				}
+			},
+			"description": "Daylight saving time begins at 2 a.m. this Sunday, meaning it's once again time to move the clocks ahead one hour. The change, which costs millions of Americans an hour of sleep, effectively moves an hour of daylight from the morning to the evening.",
+			"provider": [{
+				"_type": "Organization",
+				"name": "CBS News",
+				"image": {
+					"thumbnail": {
+						"contentUrl": "https:\/\/www.bing.com\/th?id=AR_4ae1aeddeaac21a710cf413c2980e769&pid=news"
+					}
+				}
+			}],
+			"datePublished": "2018-03-09T17:57:00",
+			"video": {
+				"name": "5 ways daylight saving time messes with your health – and what to do about it",
+				"thumbnailUrl": "https:\/\/www.bing.com\/th?id=ON.82201BAAF6C0886A04AEB7F8DA33F22C&pid=News",
+				"thumbnail": {
+					"width": 480,
+					"height": 270
+				}
+			},
+			"category": "Health"
+		}, {
+			"name": "Health Buzz: Here's Where to Go for a 'Higher Quality' Review of Your Doctor",
+			"url": "https:\/\/health.usnews.com\/wellness\/health-buzz\/articles\/2018-03-09\/heres-where-to-go-for-a-higher-quality-review-of-your-doctor",
+			"urlPingSuffix": "DevEx,5487.1",
+			"image": {
+				"contentUrl": "http:\/\/media.beam.usnews.com\/18\/c6\/807cc19343968ebc07759e3f00cf\/160824-doctor-stock.jpg",
+				"thumbnail": {
+					"contentUrl": "https:\/\/www.bing.com\/th?id=ON.B534BDB638764B81082FAB2FEFFF8C82&pid=News",
+					"width": 700,
+					"height": 466
+				}
+			},
+			"description": "You may turn to the internet to check out doctor ratings and qualifications. But new research shows that you might want to be more careful about where you look. Hospital for Special Surgery investigators discovered that there were more reviews – and more ...",
+			"about": [{
+				"readLink": "https:\/\/www.bingapis.com\/api\/v5\/entities\/6b0b080e-86d8-5688-c964-c75af95b6ef5",
+				"name": "U.S. News & World Report"
+			}],
+			"provider": [{
+				"_type": "Organization",
+				"name": "US News Health"
+			}],
+			"datePublished": "2018-03-09T17:30:00",
+			"category": "Health"
+		}]
+	},
+	"relatedSearches": {
+		"id": "https:\/\/www.bingapis.com\/api\/v5\/#RelatedSearches",
+		"value": [{
+			"text": "medical symptoms",
+			"displayText": "medical symptoms",
+			"webSearchUrl": "https:\/\/www.bing.com\/search?q=medical+symptoms",
+			"webSearchUrlPingSuffix": "DevEx,5653.1"
+		}, {
+			"text": "definition of health",
+			"displayText": "definition of health",
+			"webSearchUrl": "https:\/\/www.bing.com\/search?q=definition+of+health",
+			"webSearchUrlPingSuffix": "DevEx,5654.1"
+		}, {
+			"text": "current events in health",
+			"displayText": "current events in health",
+			"webSearchUrl": "https:\/\/www.bing.com\/search?q=current+events+in+health",
+			"webSearchUrlPingSuffix": "DevEx,5655.1"
+		}, {
+			"text": "fitness and wellness articles",
+			"displayText": "fitness and wellness articles",
+			"webSearchUrl": "https:\/\/www.bing.com\/search?q=fitness+and+wellness+articles",
+			"webSearchUrlPingSuffix": "DevEx,5656.1"
+		}, {
+			"text": "health topics",
+			"displayText": "health topics",
+			"webSearchUrl": "https:\/\/www.bing.com\/search?q=health+topics",
+			"webSearchUrlPingSuffix": "DevEx,5657.1"
+		}, {
+			"text": "health articles on health and wellness",
+			"displayText": "health articles on health and wellness",
+			"webSearchUrl": "https:\/\/www.bing.com\/search?q=health+articles+on+health+and+wellness",
+			"webSearchUrlPingSuffix": "DevEx,5658.1"
+		}, {
+			"text": "medical conditions a z",
+			"displayText": "medical conditions a z",
+			"webSearchUrl": "https:\/\/www.bing.com\/search?q=medical+conditions+a+z",
+			"webSearchUrlPingSuffix": "DevEx,5659.1"
+		}, {
+			"text": "wellness topics by month",
+			"displayText": "wellness topics by month",
+			"webSearchUrl": "https:\/\/www.bing.com\/search?q=wellness+topics+by+month",
+			"webSearchUrlPingSuffix": "DevEx,5660.1"
+		}]
+	}
+}
