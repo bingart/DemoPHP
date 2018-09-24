@@ -194,20 +194,41 @@ class ParseHelper:
 
     @staticmethod
     def parseWordPressContent(html):
+        titleValue = None
+        descriptionValue = None
+        contentValue = None
+        
         soup = BeautifulSoup(html)    
+
+        title = soup.find("title")
+        if title != None:
+            titleValue = title.text
+        else:
+            ogTitle = soup.find("meta", {"property": "og:title"})
+            if ogTitle != None:
+                titleValue = ogTitle.get("content")
+        
+        description = soup.find("meta", {"name": "description"})
+        if description != None:
+            descriptionValue = description.get("content")
+        else:
+            ogDescription = soup.find("meta", {"property": "og:description"})
+            if ogDescription != None:
+                descriptionValue = ogDescription.get("content")
+
         scripts = soup.findAll(['script', 'style', 'iframe'])
         for match in scripts:
             match.decompose()
             
         divList = soup.select("div#content")
         if (len(divList) == 1):
-            return str(divList[0])
+            contentValue = str(divList[0])
 
 #         divList = soup.select("div.content")
 #         if (len(divList) == 1):
 #             return str(divList[0])
 
-        return None
+        return titleValue, descriptionValue, contentValue
 
 if __name__=="__main__":
     print("main")
@@ -221,8 +242,8 @@ if __name__=="__main__":
         print(len(content))
 
     html = FileHelper.readContent('./resource/wp_id_content.html')
-    content = ParseHelper.parseWordPressContent(html)
-    if content != None:
-        print(len(content))
+    titleValue, descriptionValue, contentValue = ParseHelper.parseWordPressContent(html)
+    if contentValue != None:
+        print(len(contentValue))
 
         

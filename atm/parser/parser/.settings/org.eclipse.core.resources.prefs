@@ -8,3 +8,4 @@ encoding/nlp_helper.py=utf-8
 encoding/parse_helper.py=utf-8
 encoding/search.py=utf-8
 encoding/str_helper.py=utf-8
+encoding/streaming.py=utf-8

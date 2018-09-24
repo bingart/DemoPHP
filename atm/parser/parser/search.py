@@ -161,12 +161,15 @@ def parsePage():
                     
                 filePath = HttpHelper.getFullPath(ROOT_PATH, fileName, 2)
                 html = FileHelper.readContent(filePath)
-                content = ParseHelper.parseWordPressContent(html)
+                pageTitle, pageDescription, content = ParseHelper.parseWordPressContent(html)
                 if content != None:
+                    doc['pageTitle'] = pageTitle
+                    doc['pageDescription'] = pageDescription
                     doc['content'] = content
                     doc['state'] = 'PARSED'
                 else:
                     doc['state'] = 'CLOSED'
+                pageCollection.updateOne(doc)
 
                 total += 1
                 print ('total=' + str(total))
