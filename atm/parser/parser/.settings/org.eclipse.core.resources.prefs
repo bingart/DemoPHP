@@ -1,6 +1,7 @@
 eclipse.preferences.version=1
 encoding//resource/wp_class_content.html=UTF-8
 encoding/crypt_helper.py=utf-8
+encoding/file_helper.py=utf-8
 encoding/http_helper.py=utf-8
 encoding/log_helper.py=utf-8
 encoding/mongo_helper.py=utf-8
