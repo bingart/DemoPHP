@@ -5,7 +5,7 @@
 	function replaceAll(str, find, replace) { return str.replace(new RegExp(find, 'g'), replace); }
 	var isBot = /bot|google|baidu|bing|msn|duckduckgo|teoma|slurp|yandex/i.test(navigator.userAgent);
 	var isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
-	var isAdTracking = (location.href.indexOf('?atr=1') == -1);
+	var isAdTracking = ((location.href.indexOf('?atr=1') == -1) && (!isBot));
     jQuery(function($){
 		function postTracking() {
 			var req = {
