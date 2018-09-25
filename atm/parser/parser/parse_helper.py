@@ -131,8 +131,8 @@ class ParseHelper:
                 pattern = r"By[\s]+[a-zA-Z\s]+"
                 authorText = StrHelper.searchOneIgnoreCase(theParentText, pattern)
                 print (authorText)
-                if authorText != None:                
-                    indexAuthor = theParentText.find(authorText)                
+                if authorText != None:
+                    indexAuthor = theParentText.find(authorText)
                     if indexAuthor > index:
                         # search count of linefeed between title and author
                         theText = theParentText[index:indexAuthor]

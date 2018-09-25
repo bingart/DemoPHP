@@ -53,11 +53,15 @@ def searchKey():
                 
                 url = SEARCH_PATTERN.format(doc['title'], 0, 10)
                 errorCode, response = HttpHelper.get(url)
-                if errorCode != 'OK' or response == None or (not 'relatedSearches' in response):
+                if errorCode != 'OK' or response == None or (not 'relatedSearches' in response) or (not 'webPages' in response):
                     continue
                 
                 relatedSearches = response['relatedSearches']
                 if not 'value' in relatedSearches:
+                    continue
+                
+                webPages = response['webPages']
+                if not 'totalEstimatedMatches' in webPages:
                     continue
                 
                 value = relatedSearches['value']
@@ -72,7 +76,8 @@ def searchKey():
                             'title': key,
                             'state': 'CREATED',
                             'level': doc['level'],
-                            'parent': doc['title']
+                            'parent': doc['title'],
+                            'matched': webPages['totalEstimatedMatches']
                         })
 
                 doc['state'] = 'KEYED'
