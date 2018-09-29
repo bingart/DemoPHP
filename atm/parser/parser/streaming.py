@@ -31,7 +31,7 @@ DELETE_URL = 'http://www.infosoap.com/wp-content/plugins/post-api/delete_post.ph
 DELI = '____'
 PERMALINKS_URL = 'http://www.infosoap.com/wp-content/plugins/post-tester/get_all_permalinks.php'
 
-def parseUploadPage():
+def uploadPage():
     try:
         total = 0
         while True:
@@ -102,19 +102,6 @@ def downloadTrackingLog(siteName, logDate = None):
     else:
         print ('download log file error, fileName=' + logFileName)
 
-def insertUpdateUrl(trackDate, url):
-    old = trackCollection.queryOneByFilter({'url': url, 'trackDate': trackDate})
-    if old == None:
-        trackCollection.insertOne({
-            'url': url,
-            'trackDate': trackDate,
-            'count': 0,
-        })
-    else:
-        old['count'] = old['count'] + 1
-        trackCollection.updateOne(old)
-        
-
 def importTrackingLog():
     onlyfiles = [f for f in listdir(ROOT_PATH) if isfile(join(ROOT_PATH, f))]
     for f in onlyfiles:
@@ -127,7 +114,19 @@ def importTrackingLog():
                 ua = pList[1]
                 url = pList[2]
                 uip = pList[3]
-                insertUpdateUrl(url)
+
+                if True:
+                    old = trackCollection.queryOneByFilter({'url': url, 'trackDate': trackDate})
+                    if old == None:
+                        trackCollection.insertOne({
+                            'url': url,
+                            'trackDate': trackDate,
+                            'count': 0,
+                        })
+                    else:
+                        old['count'] = old['count'] + 1
+                        trackCollection.updateOne(old)
+                    
         backupFilePath = f.replace(ROOT_PATH, BACKUP_PATH)
         os.rename(f, backupFilePath)
         print ('import file, ' + f)                
@@ -169,4 +168,4 @@ def eliminatePost():
     
                                     
 if __name__=="__main__":
-    parseUploadPage()
+    uploadPage()

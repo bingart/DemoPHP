@@ -39,7 +39,7 @@ def loadKey():
                 'parent': None,
             })
         
-def searchKey():
+def searchKeyByKey():
     try:
         total = 0
         while True:
@@ -91,7 +91,8 @@ def searchKey():
     except Exception as err :
         print(err)    
 
-def searchPage():
+# search pages by key and save into page collection
+def searchPageByKey():
     try:
         total = 0
         while True:
@@ -131,12 +132,12 @@ def searchPage():
                         old = pageCollection.queryOneByFilter({'url', page['url']})
                         if old == None:
                             insertList.append(page)
+                    if len(insertList) > 0:
+                        pageCollection.insertMany(insertList)
                     
-                    pageCollection.insertMany(insertList)
-                    
-                    doc['pageList'] = pageList
-                    doc['state'] = 'PAGED'
-                    keyCollection.updateOne(doc)
+                doc['pageList'] = pageList
+                doc['state'] = 'PAGED'
+                keyCollection.updateOne(doc)
 
                 total += 1
                 print ('total=' + str(total))
@@ -184,9 +185,59 @@ def parsePage():
     except Exception as err :
         print(err)    
     
+# parse key's page list, find at least 3 WP pages
+def parseKey():
+    try:
+        total = 0
+        while True:
+            docList = keyCollection.nextPage(20)
+            if docList == None or len(docList) == 0:
+                break
+
+            for doc in docList:
+                if doc['state'] == 'PARSED':
+                    continue
+                
+                if not 'pageList' in doc:
+                    continue
+                    
+                pageList = doc['pageList']
+                foundList = []
+                for page in pageList:
+                    fileName, finalUrl = HttpHelper.fetchAndSave(page['url'], ROOT_PATH, 'utf-8', 2)
+                    if fileName == None:
+                        page['state'] = 'CLOSED'
+                    else:
+                        page['fileName'] = fileName
+                        page['state'] = 'FETCHED'
+                    filePath = HttpHelper.getFullPath(ROOT_PATH, fileName, 2)
+                    html = FileHelper.readContent(filePath)
+                    pageTitle, pageDescription, content = ParseHelper.parseWordPressContent(html)
+                    if content != None:
+                        foundList.append({
+                            'title': pageTitle,
+                            'description': pageDescription,
+                            'content': content
+                        })
+                    
+                if len(foundList) > 0:
+                    doc['foundList'] = foundList
+                    doc['state'] = 'PARSED'
+                else:
+                    doc['state'] = 'CLOSED'
+                keyCollection.updateOne(doc)
+
+                total += 1
+                print ('total=' + str(total))
+                
+                time.sleep(1)
+    
+    except Exception as err :
+        print(err)    
+
 
 if __name__=="__main__":
     loadKey()
-    searchKey()
-    searchPage()
+    searchKeyByKey()
+    searchPageByKey()
     parsePage()

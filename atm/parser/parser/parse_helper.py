@@ -224,9 +224,11 @@ class ParseHelper:
         if (len(divList) == 1):
             contentValue = str(divList[0])
 
-#         divList = soup.select("div.content")
-#         if (len(divList) == 1):
-#             return str(divList[0])
+
+        if contentValue == None:
+            divList = soup.select("div.content")
+            if (len(divList) == 1):
+                return str(divList[0])
 
         return titleValue, descriptionValue, contentValue
 
