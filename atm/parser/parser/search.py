@@ -213,7 +213,7 @@ def parseKey():
                     filePath = HttpHelper.getFullPath(ROOT_PATH, fileName, 2)
                     html = FileHelper.readContent(filePath)
                     pageTitle, pageDescription, content = ParseHelper.parseWordPressContent(html)
-                    if content != None:
+                    if content != None and pageDescription != None and content != None:
                         foundList.append({
                             'title': pageTitle,
                             'description': pageDescription,
@@ -235,6 +235,57 @@ def parseKey():
     except Exception as err :
         print(err)    
 
+# Generate key page from foundList
+def generateKeyPage():
+    try:
+        total = 0
+        while True:
+            docList = keyCollection.nextPage(20)
+            if docList == None or len(docList) == 0:
+                break
+
+            for doc in docList:
+                if doc['state'] == 'GENERATED':
+                    continue
+                
+                if not 'foundList' in doc:
+                    continue
+                
+                foundCount = 0
+                foundList = doc['foundList']
+                finalTitle = ''
+                finalDescription = ''
+                finalContent = ''
+                isFirst = True
+                for page in foundList:
+                    title = page['title']
+                    description = page['description']
+                    content = page['content']
+                    if isFirst:
+                        isFirst = False
+                        finalTitle += title
+                        finalDescription += description
+                    else:
+                        finalTitle += ', ' + title
+                        finalDescription += ', ' + description
+                    finalContent += '<div class="sub-content">' + content + '</div>'
+                    
+                    foundCount += 1
+                    if foundCount >= 3:
+                        break
+                    
+                doc['finalTitle'] = finalTitle
+                doc['finalDescription'] = finalDescription
+                doc['finalContent'] = finalContent
+
+                total += 1
+                print ('total=' + str(total))
+                
+                time.sleep(1)
+    
+    except Exception as err :
+        print(err)    
+    
 
 if __name__=="__main__":
     loadKey()
