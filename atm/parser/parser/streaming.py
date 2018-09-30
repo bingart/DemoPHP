@@ -31,11 +31,14 @@ DELETE_URL = 'http://www.infosoap.com/wp-content/plugins/post-api/delete_post.ph
 DELI = '____'
 PERMALINKS_URL = 'http://www.infosoap.com/wp-content/plugins/post-tester/get_all_permalinks.php'
 
-def uploadPage():
+def uploadPage(source):
     try:
         total = 0
         while True:
-            docList = pageCollection.nextPage(20)
+            if source == 'page':
+                docList = pageCollection.nextPage(20)
+            else:
+                docList = keyCollection.nextPage(20)
             if docList == None or len(docList) == 0:
                 break
 
@@ -168,4 +171,4 @@ def eliminatePost():
     
                                     
 if __name__=="__main__":
-    uploadPage()
+    uploadPage('key')
