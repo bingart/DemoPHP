@@ -14,6 +14,7 @@ from url_helper import UrlHelper
 from parse_helper import ParseHelper
 
 MONGO_HOST = "172.16.40.128:27017,172.16.40.140:27017,172.16.40.141:27017"
+MONGO_HOST = "127.0.0.1:27017"
 MONGO_DATABASE_NAME = "ZDBAmazon"
 MONGO_KEY_COLLECTION = "key"
 MONGO_PAGE_COLLECTION = "page"

@@ -11,11 +11,14 @@ from url_helper import UrlHelper
 from parse_helper import ParseHelper
 
 MONGO_HOST = "172.16.40.128:27017,172.16.40.140:27017,172.16.40.141:27017"
+MONGO_HOST = "127.0.0.1:27017"
 MONGO_DATABASE_NAME = "ZDBAmazon"
 MONGO_KEY_COLLECTION = "key"
 MONGO_PAGE_COLLECTION = "page"
 MONGO_TARGET_COLLECTION = "target"
-SEARCH_PATTERN = 'http://healthtopquestions.com/wp-content/plugins/post-tester/bingapi.php?token=P@ssw0rd&t=web&q={0}&offset={1}&count={2}'
+SEARCH_PATTERN = 'http://healthtopquestions.com/wp-content/plugins/post-tester/bingapi.php?token=P@ssw0rd&t=web&q="{0}"%20wordpress&offset={1}&count={2}'
+SEARCH_PATTERN = 'http://infosoap.com/wp-content/plugins/post-tester/bingapi.php?token=P@ssw0rd&t=web&q={0}&offset={1}&count={2}'
+BLACK_SITE_LIST = ['webmd.com', 'drugs.com']
 ROOT_PATH = 'E:/NutchData/pages/wpm'
 
 keyCollection = MongoHelper(MONGO_HOST, 27017, MONGO_DATABASE_NAME, MONGO_KEY_COLLECTION, "title")
@@ -125,6 +128,14 @@ def searchPageByKey():
                                 'state': 'CREATED',
                                 'key': doc['title']
                             }
+                            
+                            isBlack = False
+                            for site in BLACK_SITE_LIST:
+                                if site in item['url']:
+                                    isBlack = True
+                                    
+                            if not isBlack:
+                                pageList.append(page)
                 
                 if len(pageList) > 0:
                     insertList = []
