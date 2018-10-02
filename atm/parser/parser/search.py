@@ -116,7 +116,7 @@ def searchPageByKey():
                 for offset in [0, 20, 40]:
                     url = SEARCH_PAGE_PATTERN.format(doc['title'], offset, 20)
                     errorCode, response = HttpHelper.get(url)
-                    if errorCode != 'OK' or response == None or (not 'webPages' in response):
+                    if errorCode != 'OK' or response == None or (not 'result' in response):
                         continue
                     
                     webPages = response['result']['webPages']
@@ -144,12 +144,12 @@ def searchPageByKey():
                 
                 if len(pageList) > 0:
                     insertList = []
-                    for page in pageList:
-                        old = pageCollection.findOneByFilter({'url', page['url']})
-                        if old == None:
-                            insertList.append(page)
-                    if len(insertList) > 0:
-                        pageCollection.insertMany(insertList)
+#                     for page in pageList:
+#                         old = pageCollection.findOneByFilter({'url', page['url']})
+#                         if old == None:
+#                             insertList.append(page)
+#                     if len(insertList) > 0:
+#                         pageCollection.insertMany(insertList)
                     
                 doc['pageList'] = pageList
                 doc['state'] = 'PAGED'
@@ -163,6 +163,7 @@ def searchPageByKey():
     except Exception as err :
         print(err)    
 
+# parse page collection
 def parsePage():
     try:
         total = 0
@@ -201,7 +202,7 @@ def parsePage():
     except Exception as err :
         print(err)    
     
-# parse key's page list, find at least 3 WP pages
+# parse key collection's pages, find at least 3 WP pages
 def parseKey():
     try:
         total = 0
@@ -305,6 +306,6 @@ def generateKeyPage():
 
 if __name__=="__main__":
     #loadKey()
-    searchKeyByKey()
-    #searchPageByKey()
+    #searchKeyByKey()
+    searchPageByKey()
     #parsePage()
