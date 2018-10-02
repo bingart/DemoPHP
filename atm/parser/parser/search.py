@@ -152,6 +152,9 @@ def searchPageByKey():
                     print ('search page by key, key={0}, closed'.format(doc['title']))
                 keyCollection.updateOne(doc)
 
+                if len(pageList) > 0:
+                    pageCollection.insertMany(pageList)
+
                 time.sleep(1)
     
     except Exception as err :
@@ -162,12 +165,15 @@ def parsePage():
     try:
         total = 0
         while True:
-            docList = pageCollection.findPage({'state': 'PAGED'}, 0, 20)
+            docList = pageCollection.findPage({'state': 'CREATED'}, 0, 20)
             if docList == None or len(docList) == 0:
                 break
 
             for doc in docList:
 
+                total += 1
+                print ('total=' + str(total))
+                
                 fileName, finalUrl = HttpHelper.fetchAndSave(doc['url'], ROOT_PATH, 'utf-8', 2)
                 if fileName == None:
                     doc['state'] = 'CLOSED'
@@ -180,15 +186,12 @@ def parsePage():
                 if pageContent != None and pageTitle != None and pageDescription != None:
                     doc['pageTitle'] = pageTitle
                     doc['pageDescription'] = pageDescription
-                    doc['content'] = pageContent
+                    doc['pageContent'] = pageContent
                     doc['state'] = 'PARSED'
                 else:
                     doc['state'] = 'CLOSED'
                 pageCollection.updateOne(doc)
 
-                total += 1
-                print ('total=' + str(total))
-                
                 time.sleep(1)
     
     except Exception as err :
@@ -287,7 +290,7 @@ def generateKeyPage():
 
 if __name__=="__main__":
     #loadKey()
-    #searchKeyByKey()
+    searchKeyByKey()
     #searchPageByKey()
     #parsePage()
-    parseKey()
+    #parseKey()
