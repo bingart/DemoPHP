@@ -17,9 +17,9 @@ MONGO_KEY_COLLECTION = "key"
 MONGO_PAGE_COLLECTION = "page"
 MONGO_TARGET_COLLECTION = "target"
 SEARCH_KEY_PATTERN = 'http://healthtopquestions.com/wp-content/plugins/post-tester/bingapi.php?token=P@ssw0rd&t=web&q="{0}"&offset={1}&count={2}'
-SEARCH_KEY_PATTERN = 'http://infosoap.com/wp-content/plugins/post-tester/bingapi.php?token=P@ssw0rd&t=web&q="{0}"&offset={1}&count={2}'
+SEARCH_KEY_PATTERN = 'http://www.infosoap.com/wp-content/plugins/post-tester/bingapi.php?token=P@ssw0rd&t=web&q="{0}"&offset={1}&count={2}'
 SEARCH_PAGE_PATTERN = 'http://healthtopquestions.com/wp-content/plugins/post-tester/bingapi.php?token=P@ssw0rd&t=web&q="{0}"%20wordpress&offset={1}&count={2}'
-SEARCH_PAGE_PATTERN = 'http://infosoap.com/wp-content/plugins/post-tester/bingapi.php?token=P@ssw0rd&t=web&q="{0}"%20wordpress&offset={1}&count={2}'
+SEARCH_PAGE_PATTERN = 'http://www.infosoap.com/wp-content/plugins/post-tester/bingapi.php?token=P@ssw0rd&t=web&q="{0}"%20wordpress&offset={1}&count={2}'
 BLACK_SITE_LIST = ['webmd.com', 'drugs.com']
 ROOT_PATH = 'E:/NutchData/pages/wpm'
 
@@ -53,14 +53,22 @@ def searchKeyByKey():
                 
                 url = SEARCH_KEY_PATTERN.format(doc['title'], 0, 10)
                 errorCode, response = HttpHelper.get(url)
-                if errorCode != 'OK' or response == None or (not 'relatedSearches' in response) or (not 'webPages' in response):
+                if errorCode != 'OK' or response == None:
+                    continue
+
+                if (not 'result' in response):
                     continue
                 
-                relatedSearches = response['relatedSearches']
+                result = response['result']
+                if (not 'relatedSearches' in result) \
+                    or (not 'webPages' in result):
+                    continue
+                
+                relatedSearches = result['relatedSearches']
                 if not 'value' in relatedSearches:
                     continue
                 
-                webPages = response['webPages']
+                webPages = result['webPages']
                 if not 'totalEstimatedMatches' in webPages:
                     continue
                 
@@ -71,7 +79,7 @@ def searchKeyByKey():
                         newKeyList.append(item['text'])
                         
                 for key in newKeyList:
-                    if keyCollection.queryOneByFilter({'title': key}) == None:
+                    if keyCollection.findOneByFilter({'title': key}) == None:
                         keyCollection.insertOne({
                             'title': key,
                             'state': 'CREATED',
@@ -111,7 +119,7 @@ def searchPageByKey():
                     if errorCode != 'OK' or response == None or (not 'webPages' in response):
                         continue
                     
-                    webPages = response['webPages']
+                    webPages = response['result']['webPages']
                     if not 'value' in webPages:
                         continue
                     
@@ -137,7 +145,7 @@ def searchPageByKey():
                 if len(pageList) > 0:
                     insertList = []
                     for page in pageList:
-                        old = pageCollection.queryOneByFilter({'url', page['url']})
+                        old = pageCollection.findOneByFilter({'url', page['url']})
                         if old == None:
                             insertList.append(page)
                     if len(insertList) > 0:
