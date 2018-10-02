@@ -4,6 +4,7 @@
 import time
 import os
 import re
+import sys
 from file_helper import FileHelper
 from mongo_helper import MongoHelper
 from http_helper import HttpHelper
@@ -11,8 +12,8 @@ from url_helper import UrlHelper
 from parse_helper import ParseHelper
 
 MONGO_HOST = "172.16.40.128:27017,172.16.40.140:27017,172.16.40.141:27017"
-MONGO_HOST = "127.0.0.1:27017"
-MONGO_DATABASE_NAME = "ZDBAmazon"
+#MONGO_HOST = "127.0.0.1:27017"
+MONGO_DATABASE_NAME = "ZDBWordPress"
 MONGO_KEY_COLLECTION = "key"
 MONGO_PAGE_COLLECTION = "page"
 MONGO_TARGET_COLLECTION = "target"
@@ -21,7 +22,7 @@ SEARCH_KEY_PATTERN = 'http://www.infosoap.com/wp-content/plugins/post-tester/bin
 SEARCH_PAGE_PATTERN = 'http://healthtopquestions.com/wp-content/plugins/post-tester/bingapi.php?token=P@ssw0rd&t=web&q="{0}"%20wordpress&offset={1}&count={2}'
 SEARCH_PAGE_PATTERN = 'http://www.infosoap.com/wp-content/plugins/post-tester/bingapi.php?token=P@ssw0rd&t=web&q="{0}"%20wordpress&offset={1}&count={2}'
 BLACK_SITE_LIST = ['webmd.com', 'drugs.com']
-ROOT_PATH = 'E:/NutchData/pages/wpm'
+ROOT_PATH = 'E:/NutchData/pages/wordpress'
 
 keyCollection = MongoHelper(MONGO_HOST, 27017, MONGO_DATABASE_NAME, MONGO_KEY_COLLECTION, "title")
 pageCollection = MongoHelper(MONGO_HOST, 27017, MONGO_DATABASE_NAME, MONGO_PAGE_COLLECTION, "url")
@@ -170,32 +171,38 @@ def parsePage():
                 break
 
             for doc in docList:
-
-                total += 1
-                print ('total=' + str(total))
                 
-                fileName, finalUrl = HttpHelper.fetchAndSave(doc['url'], ROOT_PATH, 'utf-8', 2)
-                if fileName == None:
+                try:
+                    total += 1
+                    print ('total=' + str(total))
+                    print ('url=' + doc['url'])
+                    
+                    fileName, finalUrl = HttpHelper.fetchAndSave(doc['url'], ROOT_PATH, 'utf-8', 2)
+                    if fileName == None:
+                        doc['state'] = 'CLOSED'
+                        pageCollection.updateOne(doc)
+                        continue
+                        
+                    filePath = HttpHelper.getFullPath(ROOT_PATH, fileName, 2)
+                    html = FileHelper.readContent(filePath)
+                    pageTitle, pageDescription, pageContent = ParseHelper.parseWordPressContent(html)
+                    if pageContent != None and pageTitle != None and pageDescription != None:
+                        doc['pageTitle'] = pageTitle
+                        doc['pageDescription'] = pageDescription
+                        doc['pageContent'] = pageContent
+                        doc['state'] = 'PARSED'
+                    else:
+                        doc['state'] = 'CLOSED'
+                    pageCollection.updateOne(doc)
+    
+                    time.sleep(1)
+                except Exception as err :
+                    print(err)
                     doc['state'] = 'CLOSED'
                     pageCollection.updateOne(doc)
-                    continue
-                    
-                filePath = HttpHelper.getFullPath(ROOT_PATH, fileName, 2)
-                html = FileHelper.readContent(filePath)
-                pageTitle, pageDescription, pageContent = ParseHelper.parseWordPressContent(html)
-                if pageContent != None and pageTitle != None and pageDescription != None:
-                    doc['pageTitle'] = pageTitle
-                    doc['pageDescription'] = pageDescription
-                    doc['pageContent'] = pageContent
-                    doc['state'] = 'PARSED'
-                else:
-                    doc['state'] = 'CLOSED'
-                pageCollection.updateOne(doc)
-
-                time.sleep(1)
     
     except Exception as err :
-        print(err)    
+        print(err)
     
 # parse key collection's pages, find at least 3 WP pages
 def parseKey():
@@ -246,7 +253,7 @@ def generateKeyPage():
     try:
         total = 0
         while True:
-            docList = keyCollection.findPage({'state': 'PARSED'}, 0, 20)
+            docList = keyCollection.findPage({'state': 'PAGED'}, 0, 20)
             if docList == None or len(docList) == 0:
                 break
 
@@ -254,9 +261,15 @@ def generateKeyPage():
                 
                 total += 1
                 print ('total=' + str(total))
+                print ('key=' + doc['title'])
                 
                 foundCount = 0
-                foundList = doc['foundList']
+                foundList = pageCollection.findPage({'key': doc['title'], 'state': 'PARSED'}, 0, 100)
+                if len(foundList) == 0:
+                    doc['state'] = 'CLOSED'
+                    keyCollection.updateOne(doc)
+                    continue
+                
                 finalTitle = ''
                 finalDescription = ''
                 finalContent = ''
@@ -264,7 +277,7 @@ def generateKeyPage():
                 for page in foundList:
                     title = page['title']
                     description = page['description']
-                    content = page['content']
+                    content = page['pageContent']
                     if isFirst:
                         isFirst = False
                         finalTitle += title
@@ -289,8 +302,20 @@ def generateKeyPage():
     
 
 if __name__=="__main__":
-    #loadKey()
-    #searchKeyByKey()
-    searchPageByKey()
-    #parsePage()
+    cmd = 'load'
+    if len(sys.argv) == 2:
+        cmd = sys.argv[1]
+    else:
+        cmd = 'load'
+    
+    if cmd == 'load':
+        loadKey()
+    elif cmd == 'k2k':
+        searchKeyByKey()
+    elif cmd == 'k2p':
+        searchPageByKey()
+    elif cmd == 'parse':
+        parsePage()
     #parseKey()
+    elif cmd == 'generate':
+        generateKeyPage()
