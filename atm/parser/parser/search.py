@@ -43,14 +43,11 @@ def searchKeyByKey():
     try:
         total = 0
         while True:
-            docList = keyCollection.nextPage(20)
+            docList = keyCollection.findPage({'state': 'CREATED'}, 0, 20)
             if docList == None or len(docList) == 0:
                 break
 
             for doc in docList:
-                if doc['state'] == 'KEYED':
-                    continue
-                
                 url = SEARCH_KEY_PATTERN.format(doc['title'], 0, 10)
                 errorCode, response = HttpHelper.get(url)
                 if errorCode != 'OK' or response == None:
@@ -104,7 +101,7 @@ def searchPageByKey():
     try:
         total = 0
         while True:
-            docList = keyCollection.nextPage(20)
+            docList = keyCollection.findPage({'state': 'CREATED'}, 0, 20)
             if docList == None or len(docList) == 0:
                 break
 
@@ -113,22 +110,19 @@ def searchPageByKey():
                 total += 1
                 print ('total=' + str(total))
                 
-                if doc['state'] == 'PAGED' or doc['state'] == 'CLOSED':
-                    continue
-                
                 pageList = []
                 for offset in [0, 20, 40]:
                     url = SEARCH_PAGE_PATTERN.format(doc['title'], offset, 20)
                     errorCode, response = HttpHelper.get(url)
                     if errorCode != 'OK' or response == None or (not 'result' in response):
-                        continue
+                        break
                     
                     if not 'webPages' in response['result']:
                         break
                     
                     webPages = response['result']['webPages']
                     if not 'value' in webPages:
-                        continue
+                        break
                     
                     value = webPages['value']
                     for item in value:
@@ -168,13 +162,11 @@ def parsePage():
     try:
         total = 0
         while True:
-            docList = pageCollection.nextPage(20)
+            docList = pageCollection.findPage({'state': 'PAGED'}, 0, 20)
             if docList == None or len(docList) == 0:
                 break
 
             for doc in docList:
-                if doc['state'] == 'PARSED' or doc['state'] == 'CLOSED':
-                    continue
 
                 fileName, finalUrl = HttpHelper.fetchAndSave(doc['url'], ROOT_PATH, 'utf-8', 2)
                 if fileName == None:
@@ -184,11 +176,11 @@ def parsePage():
                     
                 filePath = HttpHelper.getFullPath(ROOT_PATH, fileName, 2)
                 html = FileHelper.readContent(filePath)
-                pageTitle, pageDescription, content = ParseHelper.parseWordPressContent(html)
-                if content != None:
+                pageTitle, pageDescription, pageContent = ParseHelper.parseWordPressContent(html)
+                if pageContent != None and pageTitle != None and pageDescription != None:
                     doc['pageTitle'] = pageTitle
                     doc['pageDescription'] = pageDescription
-                    doc['content'] = content
+                    doc['content'] = pageContent
                     doc['state'] = 'PARSED'
                 else:
                     doc['state'] = 'CLOSED'
@@ -207,66 +199,58 @@ def parseKey():
     try:
         total = 0
         while True:
-            docList = keyCollection.nextPage(20)
+            docList = keyCollection.findPage({'state': 'PAGED'}, 0, 20)
             if docList == None or len(docList) == 0:
                 break
 
             for doc in docList:
-                if doc['state'] == 'PARSED':
-                    continue
+
+                total += 1
+                print ('total=' + str(total))
                 
-                if not 'pageList' in doc:
-                    continue
-                    
                 pageList = doc['pageList']
                 foundList = []
                 for page in pageList:
                     fileName, finalUrl = HttpHelper.fetchAndSave(page['url'], ROOT_PATH, 'utf-8', 2)
                     if fileName == None:
-                        page['state'] = 'CLOSED'
-                    else:
-                        page['fileName'] = fileName
-                        page['state'] = 'FETCHED'
+                        continue
                     filePath = HttpHelper.getFullPath(ROOT_PATH, fileName, 2)
                     html = FileHelper.readContent(filePath)
-                    pageTitle, pageDescription, content = ParseHelper.parseWordPressContent(html)
-                    if content != None and pageDescription != None and content != None:
+                    pageTitle, pageDescription, pageContent = ParseHelper.parseWordPressContent(html)
+                    if pageTitle != None and pageDescription != None and pageContent != None:
                         foundList.append({
                             'title': pageTitle,
                             'description': pageDescription,
-                            'content': content
+                            'content': pageContent
                         })
                     
                 if len(foundList) > 0:
                     doc['foundList'] = foundList
                     doc['state'] = 'PARSED'
+                    print ('parse key, key={0}, found={1}'.format(doc['title'], len(foundList)))
                 else:
                     doc['state'] = 'CLOSED'
+                    print ('parse key, key={0}, closed'.format(doc['title']))
                 keyCollection.updateOne(doc)
 
-                total += 1
-                print ('total=' + str(total))
-                
                 time.sleep(1)
     
     except Exception as err :
-        print(err)    
+        print(err)
 
 # Generate key page from foundList
 def generateKeyPage():
     try:
         total = 0
         while True:
-            docList = keyCollection.nextPage(20)
+            docList = keyCollection.findPage({'state': 'PARSED'}, 0, 20)
             if docList == None or len(docList) == 0:
                 break
 
             for doc in docList:
-                if doc['state'] == 'GENERATED':
-                    continue
                 
-                if not 'foundList' in doc:
-                    continue
+                total += 1
+                print ('total=' + str(total))
                 
                 foundCount = 0
                 foundList = doc['foundList']
@@ -295,9 +279,6 @@ def generateKeyPage():
                 doc['finalDescription'] = finalDescription
                 doc['finalContent'] = finalContent
 
-                total += 1
-                print ('total=' + str(total))
-                
                 time.sleep(1)
     
     except Exception as err :
@@ -307,6 +288,6 @@ def generateKeyPage():
 if __name__=="__main__":
     #loadKey()
     #searchKeyByKey()
-    searchPageByKey()
+    #searchPageByKey()
     #parsePage()
-    #parseKey()
+    parseKey()
