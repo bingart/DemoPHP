@@ -109,7 +109,11 @@ def searchPageByKey():
                 break
 
             for doc in docList:
-                if doc['state'] == 'PAGED':
+
+                total += 1
+                print ('total=' + str(total))
+                
+                if doc['state'] == 'PAGED' or doc['state'] == 'CLOSED':
                     continue
                 
                 pageList = []
@@ -118,6 +122,9 @@ def searchPageByKey():
                     errorCode, response = HttpHelper.get(url)
                     if errorCode != 'OK' or response == None or (not 'result' in response):
                         continue
+                    
+                    if not 'webPages' in response['result']:
+                        break
                     
                     webPages = response['result']['webPages']
                     if not 'value' in webPages:
@@ -143,21 +150,14 @@ def searchPageByKey():
                                 pageList.append(page)
                 
                 if len(pageList) > 0:
-                    insertList = []
-#                     for page in pageList:
-#                         old = pageCollection.findOneByFilter({'url', page['url']})
-#                         if old == None:
-#                             insertList.append(page)
-#                     if len(insertList) > 0:
-#                         pageCollection.insertMany(insertList)
-                    
-                doc['pageList'] = pageList
-                doc['state'] = 'PAGED'
+                    doc['pageList'] = pageList
+                    doc['state'] = 'PAGED'
+                    print ('search page by key, key={0}, found={1}'.format(doc['title'], len(pageList)))
+                else:
+                    doc['state'] = 'CLOSED'
+                    print ('search page by key, key={0}, closed'.format(doc['title']))
                 keyCollection.updateOne(doc)
 
-                total += 1
-                print ('total=' + str(total))
-                
                 time.sleep(1)
     
     except Exception as err :
@@ -173,7 +173,7 @@ def parsePage():
                 break
 
             for doc in docList:
-                if doc['state'] == 'PARSED':
+                if doc['state'] == 'PARSED' or doc['state'] == 'CLOSED':
                     continue
 
                 fileName, finalUrl = HttpHelper.fetchAndSave(doc['url'], ROOT_PATH, 'utf-8', 2)
@@ -309,3 +309,4 @@ if __name__=="__main__":
     #searchKeyByKey()
     searchPageByKey()
     #parsePage()
+    #parseKey()
