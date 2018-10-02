@@ -281,7 +281,7 @@ def generateKeyPage():
 
                 time.sleep(1)
     
-    except Exception as err :
+    except Exception as err : 
         print(err)    
     
 
