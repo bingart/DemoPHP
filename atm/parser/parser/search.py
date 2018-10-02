@@ -290,7 +290,7 @@ def generateKeyPage():
 
 if __name__=="__main__":
     #loadKey()
-    searchKeyByKey()
-    #searchPageByKey()
+    #searchKeyByKey()
+    searchPageByKey()
     #parsePage()
     #parseKey()
