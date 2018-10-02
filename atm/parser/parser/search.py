@@ -16,8 +16,10 @@ MONGO_DATABASE_NAME = "ZDBAmazon"
 MONGO_KEY_COLLECTION = "key"
 MONGO_PAGE_COLLECTION = "page"
 MONGO_TARGET_COLLECTION = "target"
-SEARCH_PATTERN = 'http://healthtopquestions.com/wp-content/plugins/post-tester/bingapi.php?token=P@ssw0rd&t=web&q="{0}"%20wordpress&offset={1}&count={2}'
-SEARCH_PATTERN = 'http://infosoap.com/wp-content/plugins/post-tester/bingapi.php?token=P@ssw0rd&t=web&q={0}&offset={1}&count={2}'
+SEARCH_KEY_PATTERN = 'http://healthtopquestions.com/wp-content/plugins/post-tester/bingapi.php?token=P@ssw0rd&t=web&q="{0}"&offset={1}&count={2}'
+SEARCH_KEY_PATTERN = 'http://infosoap.com/wp-content/plugins/post-tester/bingapi.php?token=P@ssw0rd&t=web&q="{0}"&offset={1}&count={2}'
+SEARCH_PAGE_PATTERN = 'http://healthtopquestions.com/wp-content/plugins/post-tester/bingapi.php?token=P@ssw0rd&t=web&q="{0}"%20wordpress&offset={1}&count={2}'
+SEARCH_PAGE_PATTERN = 'http://infosoap.com/wp-content/plugins/post-tester/bingapi.php?token=P@ssw0rd&t=web&q="{0}"%20wordpress&offset={1}&count={2}'
 BLACK_SITE_LIST = ['webmd.com', 'drugs.com']
 ROOT_PATH = 'E:/NutchData/pages/wpm'
 
@@ -26,14 +28,9 @@ pageCollection = MongoHelper(MONGO_HOST, 27017, MONGO_DATABASE_NAME, MONGO_PAGE_
     
 
 def loadKey():
-    keyList = []
-    lineList = FileHelper.loadFileList('d:/key.txt')
-    for line in lineList:
-        key = line.strip()
-        keyList.append(key)
-    
+    keyList = FileHelper.loadFileList('d:/key.txt')
     for key in keyList:
-        old = keyCollection.findOneByFilter({'title', key})
+        old = keyCollection.findOneByFilter({'title': key})
         if old == None:
             keyCollection.insertOne({
                 'title': key,
@@ -54,7 +51,7 @@ def searchKeyByKey():
                 if doc['state'] == 'KEYED':
                     continue
                 
-                url = SEARCH_PATTERN.format(doc['title'], 0, 10)
+                url = SEARCH_KEY_PATTERN.format(doc['title'], 0, 10)
                 errorCode, response = HttpHelper.get(url)
                 if errorCode != 'OK' or response == None or (not 'relatedSearches' in response) or (not 'webPages' in response):
                     continue
@@ -78,7 +75,7 @@ def searchKeyByKey():
                         keyCollection.insertOne({
                             'title': key,
                             'state': 'CREATED',
-                            'level': doc['level'],
+                            'level': doc['level'] + 1,
                             'parent': doc['title'],
                             'matched': webPages['totalEstimatedMatches']
                         })
@@ -109,7 +106,7 @@ def searchPageByKey():
                 
                 pageList = []
                 for offset in [0, 20, 40]:
-                    url = SEARCH_PATTERN.format(doc['title'], offset, 20)
+                    url = SEARCH_PAGE_PATTERN.format(doc['title'], offset, 20)
                     errorCode, response = HttpHelper.get(url)
                     if errorCode != 'OK' or response == None or (not 'webPages' in response):
                         continue
@@ -299,7 +296,7 @@ def generateKeyPage():
     
 
 if __name__=="__main__":
-    loadKey()
+    #loadKey()
     searchKeyByKey()
-    searchPageByKey()
-    parsePage()
+    #searchPageByKey()
+    #parsePage()
