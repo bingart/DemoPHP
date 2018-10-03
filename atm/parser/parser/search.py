@@ -204,56 +204,12 @@ def parsePage():
     except Exception as err :
         print(err)
     
-# parse key collection's pages, find at least 3 WP pages
-def parseKey():
-    try:
-        total = 0
-        while True:
-            docList = keyCollection.findPage({'state': 'PAGED'}, 0, 20)
-            if docList == None or len(docList) == 0:
-                break
-
-            for doc in docList:
-
-                total += 1
-                print ('total=' + str(total))
-                
-                pageList = doc['pageList']
-                foundList = []
-                for page in pageList:
-                    fileName, finalUrl = HttpHelper.fetchAndSave(page['url'], ROOT_PATH, 'utf-8', 2)
-                    if fileName == None:
-                        continue
-                    filePath = HttpHelper.getFullPath(ROOT_PATH, fileName, 2)
-                    html = FileHelper.readContent(filePath)
-                    pageTitle, pageDescription, pageContent = ParseHelper.parseWordPressContent(html)
-                    if pageTitle != None and pageDescription != None and pageContent != None:
-                        foundList.append({
-                            'title': pageTitle,
-                            'description': pageDescription,
-                            'content': pageContent
-                        })
-                    
-                if len(foundList) > 0:
-                    doc['foundList'] = foundList
-                    doc['state'] = 'PARSED'
-                    print ('parse key, key={0}, found={1}'.format(doc['title'], len(foundList)))
-                else:
-                    doc['state'] = 'CLOSED'
-                    print ('parse key, key={0}, closed'.format(doc['title']))
-                keyCollection.updateOne(doc)
-
-                time.sleep(1)
-    
-    except Exception as err :
-        print(err)
-
 # Generate key page from foundList
 def generateKeyPage():
     try:
         total = 0
         while True:
-            docList = keyCollection.findPage({'state': 'PAGED'}, 0, 20)
+            docList = keyCollection.findPage({'state': 'PAGED'}, 0, 10)
             if docList == None or len(docList) == 0:
                 break
 
@@ -264,7 +220,7 @@ def generateKeyPage():
                 print ('key=' + doc['title'])
                 
                 foundCount = 0
-                foundList = pageCollection.findPage({'key': doc['title'], 'state': 'PARSED'}, 0, 100)
+                foundList = pageCollection.findPage({'key': doc['title'], 'state': 'PARSED'}, 0, 4)
                 if len(foundList) == 0:
                     doc['state'] = 'CLOSED'
                     keyCollection.updateOne(doc)
@@ -294,19 +250,20 @@ def generateKeyPage():
                 doc['finalTitle'] = finalTitle
                 doc['finalDescription'] = finalDescription
                 doc['finalContent'] = finalContent
+                doc['state'] = 'GENERATED'
+                keyCollection.updateOne(doc)
 
                 time.sleep(1)
     
     except Exception as err : 
         print(err)    
     
-
 if __name__=="__main__":
     cmd = 'load'
     if len(sys.argv) == 2:
         cmd = sys.argv[1]
     else:
-        cmd = 'load'
+        cmd = 'generate'
     
     if cmd == 'load':
         loadKey()
