@@ -16,7 +16,7 @@ MONGO_HOST = "172.16.40.128:27017,172.16.40.140:27017,172.16.40.141:27017"
 MONGO_DATABASE_NAME = "ZDBWordPress"
 MONGO_KEY_COLLECTION = "key"
 MONGO_PAGE_COLLECTION = "page"
-MONGO_TARGET_COLLECTION = "target"
+MONGO_TRACK_COLLECTION = "track"
 SEARCH_KEY_PATTERN = 'http://healthtopquestions.com/wp-content/plugins/post-tester/bingapi.php?token=P@ssw0rd&t=web&q="{0}"&offset={1}&count={2}'
 SEARCH_KEY_PATTERN = 'http://www.infosoap.com/wp-content/plugins/post-tester/bingapi.php?token=P@ssw0rd&t=web&q="{0}"&offset={1}&count={2}'
 SEARCH_PAGE_PATTERN = 'http://healthtopquestions.com/wp-content/plugins/post-tester/bingapi.php?token=P@ssw0rd&t=web&q="{0}"%20wordpress&offset={1}&count={2}'

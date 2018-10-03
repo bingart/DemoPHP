@@ -15,11 +15,11 @@ from parse_helper import ParseHelper
 
 MONGO_HOST = "172.16.40.128:27017,172.16.40.140:27017,172.16.40.141:27017"
 MONGO_HOST = "127.0.0.1:27017"
-MONGO_DATABASE_NAME = "ZDBAmazon"
+MONGO_DATABASE_NAME = "ZDBWordPress"
 MONGO_KEY_COLLECTION = "key"
 MONGO_PAGE_COLLECTION = "page"
 MONGO_TRACK_COLLECTION = "track"
-ROOT_PATH = 'E:/NutchData/pages/wpm'
+ROOT_PATH = 'E:/NutchData/pages/track'
 BACKUP_PATH = 'E:/NutchData/pages/backup'
 
 keyCollection = MongoHelper(MONGO_HOST, 27017, MONGO_DATABASE_NAME, MONGO_KEY_COLLECTION, "title")
