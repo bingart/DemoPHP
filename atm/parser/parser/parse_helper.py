@@ -193,7 +193,7 @@ class ParseHelper:
         return [found, doc]
 
     @staticmethod
-    def parseWordPressContent(html):
+    def parseWordPressContent(html, isInnerHtml):
         titleValue = None
         descriptionValue = None
         contentValue = None
@@ -222,13 +222,18 @@ class ParseHelper:
             
         divList = soup.select("div#content")
         if (len(divList) == 1):
-            contentValue = str(divList[0])
-
+            if isInnerHtml:
+                contentValue = divList[0].encode_contents()
+            else:
+                contentValue = str(divList[0])
 
         if contentValue == None:
             divList = soup.select("div.content")
             if (len(divList) == 1):
-                return str(divList[0])
+                if isInnerHtml:
+                    contentValue = divList[0].encode_contents()
+                else:
+                    contentValue = str(divList[0])
 
         return titleValue, descriptionValue, contentValue
 
@@ -247,5 +252,3 @@ if __name__=="__main__":
     titleValue, descriptionValue, contentValue = ParseHelper.parseWordPressContent(html)
     if contentValue != None:
         print(len(contentValue))
-
-        

@@ -185,7 +185,7 @@ def parsePage():
                         
                     filePath = HttpHelper.getFullPath(ROOT_PATH, fileName, 2)
                     html = FileHelper.readContent(filePath)
-                    pageTitle, pageDescription, pageContent = ParseHelper.parseWordPressContent(html)
+                    pageTitle, pageDescription, pageContent = ParseHelper.parseWordPressContent(html, True)
                     if pageContent != None and pageTitle != None and pageDescription != None:
                         doc['pageTitle'] = pageTitle
                         doc['pageDescription'] = pageDescription
