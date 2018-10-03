@@ -224,6 +224,7 @@ def generateKeyPage():
                 if len(foundList) == 0:
                     doc['state'] = 'CLOSED'
                     keyCollection.updateOne(doc)
+                    print ('generate key page fails')
                     continue
                 
                 finalTitle = ''
@@ -239,8 +240,8 @@ def generateKeyPage():
                         finalTitle += title
                         finalDescription += description
                     else:
-                        finalTitle += ', ' + title
-                        finalDescription += ', ' + description
+                        finalTitle += '; ' + title
+                        finalDescription += '; ' + description
                     finalContent += '<div class="sub-content">' + content + '</div>'
                     
                     foundCount += 1
@@ -252,6 +253,7 @@ def generateKeyPage():
                 doc['finalContent'] = finalContent
                 doc['state'] = 'GENERATED'
                 keyCollection.updateOne(doc)
+                print ('generate key page ok')
 
                 time.sleep(1)
     
