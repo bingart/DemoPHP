@@ -25,7 +25,6 @@ BACKUP_PATH = 'E:/NutchData/pages/backup'
 keyCollection = MongoHelper(MONGO_HOST, 27017, MONGO_DATABASE_NAME, MONGO_KEY_COLLECTION, "title")
 pageCollection = MongoHelper(MONGO_HOST, 27017, MONGO_DATABASE_NAME, MONGO_PAGE_COLLECTION, "url")
 trackCollection = MongoHelper(MONGO_HOST, 27017, MONGO_DATABASE_NAME, MONGO_TRACK_COLLECTION, "url")
-DOMAIN = 'http://www.infosoap.com'
 QUERY_URL = 'http://www.infosoap.com/wp-content/plugins/post-api/get_post_by_title.php?token=P@ssw0rd'
 INSERT_URL = 'http://www.infosoap.com/wp-content/plugins/post-api/insert_post.php?token=P@ssw0rd'
 DELETE_URL = 'http://www.infosoap.com/wp-content/plugins/post-api/delete_post.php?token=P@ssw0rd'
@@ -51,7 +50,7 @@ def uploadPage(source):
                 req = {
                     'title': doc['title']
                 }
-                errorCode, rsp = HttpHelper.post(DOMAIN + QUERY_URL, req)
+                errorCode, rsp = HttpHelper.post(QUERY_URL, req)
                 if errorCode != 'OK':
                     raise Exception('query error, url=' + doc['url'])
                 if rsp['errorCode'] == 'ERROR':
