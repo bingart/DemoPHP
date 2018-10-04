@@ -223,7 +223,7 @@ class ParseHelper:
         divList = soup.select("div#content")
         if (len(divList) == 1):
             if isInnerHtml:
-                contentValue = divList[0].encode_contents()
+                contentValue = divList[0].encode_contents().decode('utf-8')
             else:
                 contentValue = str(divList[0])
 
@@ -231,7 +231,7 @@ class ParseHelper:
             divList = soup.select("div.content")
             if (len(divList) == 1):
                 if isInnerHtml:
-                    contentValue = divList[0].encode_contents()
+                    contentValue = divList[0].encode_contents().decode('utf-8')
                 else:
                     contentValue = str(divList[0])
 
@@ -243,12 +243,12 @@ if __name__=="__main__":
     slug = ParseHelper.title2slug(title)
     print (slug)
     
-    html = FileHelper.readContent('./resource/wp_class_content.html')
-    content = ParseHelper.parseWordPressContent(html)
-    if content != None:
-        print(len(content))
-
     html = FileHelper.readContent('./resource/wp_id_content.html')
-    titleValue, descriptionValue, contentValue = ParseHelper.parseWordPressContent(html)
+    titleValue, descriptionValue, contentValue = ParseHelper.parseWordPressContent(html, True)
     if contentValue != None:
         print(len(contentValue))
+
+    html = FileHelper.readContent('./resource/wp_class_content.html')
+    content = ParseHelper.parseWordPressContent(html, True)
+    if content != None:
+        print(len(content))

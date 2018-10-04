@@ -166,7 +166,7 @@ def parsePage():
     try:
         total = 0
         while True:
-            docList = pageCollection.findPage({'state': 'CREATED'}, 0, 20)
+            docList = pageCollection.findPage({'state': 'PARSED'}, 0, 20)
             if docList == None or len(docList) == 0:
                 break
 
@@ -245,7 +245,7 @@ def generateKeyPage():
                     finalContent += '<div class="sub-content">' + content + '</div>'
                     
                     foundCount += 1
-                    if foundCount >= 3:
+                    if foundCount >= 4:
                         break
                     
                 doc['finalTitle'] = finalTitle
