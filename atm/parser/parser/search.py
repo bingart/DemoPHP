@@ -166,7 +166,7 @@ def parsePage():
     try:
         total = 0
         while True:
-            docList = pageCollection.findPage({'state': 'PARSED'}, 0, 20)
+            docList = pageCollection.findPage({'state': 'CREATED'}, 0, 20)
             if docList == None or len(docList) == 0:
                 break
 
@@ -210,6 +210,7 @@ def generateKeyPage():
         total = 0
         while True:
             docList = keyCollection.findPage({'state': 'PAGED'}, 0, 10)
+            #docList = keyCollection.nextPage(20)
             if docList == None or len(docList) == 0:
                 break
 
@@ -218,6 +219,9 @@ def generateKeyPage():
                 total += 1
                 print ('total=' + str(total))
                 print ('key=' + doc['title'])
+                
+                if doc['state'] != 'GENERATED':
+                    continue
                 
                 foundCount = 0
                 foundList = pageCollection.findPage({'key': doc['title'], 'state': 'PARSED'}, 0, 4)
@@ -257,9 +261,28 @@ def generateKeyPage():
 
                 time.sleep(1)
     
-    except Exception as err : 
+    except Exception as err :
         print(err)    
     
+def resetPage():
+    try:
+        total = 0
+        while True:
+            docList = pageCollection.nextPage(20)
+            if docList == None or len(docList) == 0:
+                break
+
+            for doc in docList:
+                
+                total += 1
+                print ('total=' + str(total))
+                print ('url=' + doc['url'])
+
+                doc['state'] = 'CREATED'
+                pageCollection.updateOne(doc)
+    except Exception as err : 
+        print(err)    
+                
 if __name__=="__main__":
     cmd = 'load'
     if len(sys.argv) == 2:
@@ -275,6 +298,8 @@ if __name__=="__main__":
         searchPageByKey()
     elif cmd == 'parse':
         parsePage()
+    elif cmd == 'reset':
+        resetPage()
     #parseKey()
     elif cmd == 'generate':
         generateKeyPage()
