@@ -7,7 +7,7 @@ import re
 import sys
 from os import listdir
 from os.path import isfile, join
-from datetime import datetime
+from datetime import datetime, timedelta
 from file_helper import FileHelper
 from mongo_helper import MongoHelper
 from http_helper import HttpHelper
@@ -26,6 +26,7 @@ BACKUP_PATH = 'E:/NutchData/pages/backup'
 keyCollection = MongoHelper(MONGO_HOST, 27017, MONGO_DATABASE_NAME, MONGO_KEY_COLLECTION, "title")
 pageCollection = MongoHelper(MONGO_HOST, 27017, MONGO_DATABASE_NAME, MONGO_PAGE_COLLECTION, "url")
 trackCollection = MongoHelper(MONGO_HOST, 27017, MONGO_DATABASE_NAME, MONGO_TRACK_COLLECTION, "url")
+trackCollection.createIndex('trackDate')
 QUERY_URL = 'http://www.infosoap.com/wp-content/plugins/post-api/get_post_by_title.php?token=P@ssw0rd'
 INSERT_URL = 'http://www.infosoap.com/wp-content/plugins/post-api/insert_post.php?token=P@ssw0rd'
 DELETE_URL = 'http://www.infosoap.com/wp-content/plugins/post-api/delete_post.php?token=P@ssw0rd'
@@ -91,10 +92,10 @@ def uploadKeyPage():
 
 def downloadTrackingLog(siteName, logDate = None):
     if logDate == None:
-        now = datetime.now()
+        now = datetime.now() - timedelta(days=1)
         logDate = now.strftime('%Y%m%d')
     logFileName = '{0}.{1}.log'.format(siteName, logDate)
-    url = 'http://:45.79.95.201/logs/{0}.{1}.log'.format(siteName, logDate)
+    url = 'http://45.79.95.201/logs/{0}.{1}.log'.format(siteName, logDate)
     statusCode, html, finalUrl = HttpHelper.fetch(url)
     if statusCode == 200 and html != None and len(html) > 0:
         filePath = ROOT_PATH + '/' + logFileName
@@ -106,18 +107,19 @@ def downloadTrackingLog(siteName, logDate = None):
 def importTrackingLog():
     onlyfiles = [f for f in listdir(ROOT_PATH) if isfile(join(ROOT_PATH, f))]
     for f in onlyfiles:
-        lines = FileHelper.loadFileList(f)
+        logFilePath = ROOT_PATH + '/' + f
+        lines = FileHelper.loadFileList(logFilePath)
         for line in lines:
             pList = line.split(DELI)
             if len(pList) == 4:
-                trackTime = pList[0]
-                trackDate = trackTime[0, 10]
+                trackDateTime = pList[0]
+                trackDate = trackDateTime[0:10]
                 ua = pList[1]
                 url = pList[2]
                 uip = pList[3]
 
                 if True:
-                    old = trackCollection.queryOneByFilter({'url': url, 'trackDate': trackDate})
+                    old = trackCollection.findOneByFilter({'url': url, 'trackDate': trackDate})
                     if old == None:
                         trackCollection.insertOne({
                             'url': url,
@@ -128,8 +130,8 @@ def importTrackingLog():
                         old['count'] = old['count'] + 1
                         trackCollection.updateOne(old)
                     
-        backupFilePath = f.replace(ROOT_PATH, BACKUP_PATH)
-        os.rename(f, backupFilePath)
+        backupFilePath = ROOT_PATH + '/backup/' + f
+        os.rename(logFilePath, backupFilePath)
         print ('import file, ' + f)                
 
 def eliminatePost():
@@ -174,10 +176,14 @@ if __name__=="__main__":
     if len(sys.argv) == 2:
         cmd = sys.argv[1]
     else:
-        cmd = 'upload'
+        cmd = 'import'
     
     if cmd == 'upload':
         uploadKeyPage()
+    elif cmd == 'download':
+        downloadTrackingLog('diabetes')
+    elif cmd == 'import':
+        importTrackingLog()
     else:
-        print ('unknwo cmd={0}'.format(cmd))
+        print ('unknown cmd={0}'.format(cmd))
         

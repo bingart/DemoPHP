@@ -17,7 +17,7 @@ class MongoHelper:
             self.collection.create_index(self.indexName)
     
     def createIndex(self, indexFieldName):    
-        self.collection.create_index(self.indexName)
+        self.collection.create_index(indexFieldName)
             
     def count(self, theFilter):
         if filter == None:

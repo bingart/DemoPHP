@@ -45,13 +45,20 @@ class MySqlHelper:
 
 if __name__ == '__main__':
     try:
-        helper = MySqlHelper('localhost', 3306, 'traffic', 'wp', 'wp', )
-        sql = "INSERT INTO `node`(`title`, `finger`, `historyPath`, `position`, `region`, `createTime`, `updateTime`, `state`, `errorCount`, `pathOrder`) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s)"
-        helper.executeOne(sql, ('1', 'bbbbb', 'history path', '45.79.95.201', 'US', '2018-05-07 01:00:00', '2018-05-07 01:00:00', 'OK', 0, 'EXIT'))
+        if False:
+            helper = MySqlHelper('localhost', 3306, 'traffic', 'wp', 'wp', )
+            sql = "INSERT INTO `node`(`title`, `finger`, `historyPath`, `position`, `region`, `createTime`, `updateTime`, `state`, `errorCount`, `pathOrder`) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s)"
+            helper.executeOne(sql, ('1', 'bbbbb', 'history path', '45.79.95.201', 'US', '2018-05-07 01:00:00', '2018-05-07 01:00:00', 'OK', 0, 'EXIT'))
 
-        sql = 'SELECT title, finger, historyPath, position, region, createTime, updateTime, state, errorCount, pathOrder FROM node WHERE finger = %s'
-        doc = helper.queryOne(sql, ('bbbbb'))
-        print ('doc={0}'.format(doc))
+            sql = 'SELECT title, finger, historyPath, position, region, createTime, updateTime, state, errorCount, pathOrder FROM node WHERE finger = %s'
+            doc = helper.queryOne(sql, ('bbbbb'))
+            print ('doc={0}'.format(doc))
+            
+        if True:
+            helper = MySqlHelper('172.16.40.139', 3306, 'atm', 'atm', 'atm', )
+            sql = "INSERT INTO `tracking`(`url`, `ua`, `uip`, `createTime`) VALUES (%s, %s, %s, %s)"
+            helper.executeOne(sql, ('url', 'ua', 'uip', '2018-05-07 01:00:00'))
+        
     finally:
         helper.close()
         

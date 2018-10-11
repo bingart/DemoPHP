@@ -5,6 +5,7 @@ encoding/file_helper.py=utf-8
 encoding/http_helper.py=utf-8
 encoding/log_helper.py=utf-8
 encoding/mongo_helper.py=utf-8
+encoding/mysql_helper.py=utf-8
 encoding/nlp_helper.py=utf-8
 encoding/parse_helper.py=utf-8
 encoding/search.py=utf-8

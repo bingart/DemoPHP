@@ -7,3 +7,5 @@ CREATE TABLE `tracking` (
   `createTime` datetime NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=MyISAM AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
+
+ALTER TABLE `tracking` ADD UNIQUE INDEX unique_url_create_time (url, createTime);
