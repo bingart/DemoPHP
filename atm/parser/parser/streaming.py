@@ -20,8 +20,8 @@ MONGO_DATABASE_NAME = "ZDBWordPress"
 MONGO_KEY_COLLECTION = "key"
 MONGO_PAGE_COLLECTION = "page"
 MONGO_TRACK_COLLECTION = "track"
-ROOT_PATH = 'E:/NutchData/pages/track'
-BACKUP_PATH = 'E:/NutchData/pages/backup'
+ROOT_PATH = 'E:/NutchData/Traffic/logs'
+BACKUP_PATH = 'E:/NutchData/Traffic/backup'
 
 keyCollection = MongoHelper(MONGO_HOST, 27017, MONGO_DATABASE_NAME, MONGO_KEY_COLLECTION, "title")
 pageCollection = MongoHelper(MONGO_HOST, 27017, MONGO_DATABASE_NAME, MONGO_PAGE_COLLECTION, "url")
@@ -118,20 +118,27 @@ def importTrackingLog():
                 url = pList[2]
                 uip = pList[3]
 
+                if '?atr=1' in url:
+                    print ('bot url, ignored, url=' + url)
+                    continue
+
                 if True:
-                    old = trackCollection.findOneByFilter({'url': url, 'trackDate': trackDate})
+                    # The url used will be saved forever
+                    # The url used by search engine will be saved forever
+                    old = trackCollection.findOneByFilter({'url': url})
                     if old == None:
                         trackCollection.insertOne({
                             'url': url,
                             'trackDate': trackDate,
-                            'count': 0,
+                            'count': 1,
                         })
                     else:
                         old['count'] = old['count'] + 1
+                        old['trackDate'] = trackDate
                         trackCollection.updateOne(old)
                     
-        backupFilePath = ROOT_PATH + '/backup/' + f
-        os.rename(logFilePath, backupFilePath)
+        backupFilePath = BACKUP_PATH + '/' + f
+        os.replace(logFilePath, backupFilePath)
         print ('import file, ' + f)                
 
 def eliminatePost():
