@@ -10,7 +10,8 @@
 		function postTracking() {
 			var req = {
 				url: location.href,
-				ua: navigator.userAgent
+				ua: navigator.userAgent,
+				referrer: document.referrer
 			}
 			$.ajax({
 				url: '/wp-content/plugins/post-tester/tracking.php',

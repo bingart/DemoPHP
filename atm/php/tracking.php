@@ -19,8 +19,9 @@ try {
 	$req = json_decode($reqJson, true);
 	$ua = $req['ua'];
 	$url = $req['url'];
+	$referrer = $req['referrer'];
 	$ip = $_SERVER['REMOTE_ADDR'];
-	$content = $ua.$DELI.$url.$DELI.$ip;
+	$content = $ua.$DELI.$url.$DELI.$ip.$DELI.$referrer;
 	_log($content, $DELI);
 	echo 'OK';
 } catch (Exception $e) {
