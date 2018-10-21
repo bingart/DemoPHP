@@ -15,13 +15,14 @@ from url_helper import UrlHelper
 from parse_helper import ParseHelper
 
 MONGO_HOST = "172.16.40.128:27017,172.16.40.140:27017,172.16.40.141:27017"
-#MONGO_HOST = "127.0.0.1:27017"
+MONGO_HOST = "127.0.0.1:27017"
 MONGO_DATABASE_NAME = "ZDBWordPress"
 MONGO_KEY_COLLECTION = "key"
 MONGO_PAGE_COLLECTION = "page"
 MONGO_TRACK_COLLECTION = "track"
 ROOT_PATH = 'E:/NutchData/Traffic/logs'
 BACKUP_PATH = 'E:/NutchData/Traffic/backup'
+PERMALINKS_PATH = 'E:/NutchData/Traffic/permalinks'
 
 keyCollection = MongoHelper(MONGO_HOST, 27017, MONGO_DATABASE_NAME, MONGO_KEY_COLLECTION, "title")
 pageCollection = MongoHelper(MONGO_HOST, 27017, MONGO_DATABASE_NAME, MONGO_PAGE_COLLECTION, "url")
@@ -31,7 +32,7 @@ QUERY_URL = 'http://www.infosoap.com/wp-content/plugins/post-api/get_post_by_tit
 INSERT_URL = 'http://www.infosoap.com/wp-content/plugins/post-api/insert_post.php?token=P@ssw0rd'
 DELETE_URL = 'http://www.infosoap.com/wp-content/plugins/post-api/delete_post.php?token=P@ssw0rd'
 DELI = '____'
-PERMALINKS_URL = 'http://www.infosoap.com/wp-content/plugins/post-tester/get_all_permalinks.php'
+PERMALINKS_URL = 'http://www.infosoap.com/wp-content/plugins/post-tester/get_all_permalinks.php?offset={0}&limit={1}'
 
 def uploadKeyPage():
     try:
@@ -130,48 +131,78 @@ def importTrackingLog():
                         trackCollection.insertOne({
                             'url': url,
                             'trackDate': trackDate,
+                            'ua': ua,
+                            'uip': uip,
                             'count': 1,
                         })
                     else:
                         old['count'] = old['count'] + 1
                         old['trackDate'] = trackDate
+                        old['ua'] = ua
+                        old['uip'] = uip
                         trackCollection.updateOne(old)
                     
         backupFilePath = BACKUP_PATH + '/' + f
         os.replace(logFilePath, backupFilePath)
         print ('import file, ' + f)                
 
-def eliminatePost():
+def comparePost():
     try:
         # Filter tracking, get top 100 post page
-        top100List = trackCollection.findPage({}, 0, 100, 'count', 'desc')
-        
+        top100List = trackCollection.findPage({}, 0, 500, 'count', 'desc')
+        top100Dict = {}
+        for doc in top100List:
+            top100Dict[doc['url']] = ''
+            
         # Get all post id and permalinks
-        statusCode, html, finalUrl = HttpHelper.fetch(PERMALINKS_URL)
-        if statusCode != 200 or html == None:
-            print ('get all post id and permalinks fails, statusCode={0}'.format(statusCode))
-        lines = html.split('\n')
-        print ('get all post id and links ok, len={0}'.format(len(lines)))
-        eliminateList = []
-        for line in lines:
-            kv = line.split(';')
-            if len(kv) == 2:
-                postId = kv[0]
-                postLink = kv[1]
-                if not postLink in top100List:
-                    eliminateList.append(postId)
-        
-        # Remove all post not int top 100
-        print ('eliminate len='.format(len(eliminateList)))
-        for id in eliminateList:
+        eliminateIdList = []
+        eliminateLinkList = []
+        for offset in range(0, 6000, 100):
+            url = PERMALINKS_URL.format(offset, 100)
+            statusCode, html, finalUrl = HttpHelper.fetch(url)
+            if statusCode != 200 or html == None:
+                print ('get all post id and permalinks fails, statusCode={0}'.format(statusCode))
+                break
+            lines = html.split('\n')
+            print ('get all post id and links ok, len={0}'.format(len(lines)))
+            postCount = 0
+            for line in lines:
+                kv = line.split(';')
+                if len(kv) == 2:
+                    postCount += 1
+                    postId = kv[0]
+                    postLink = kv[1]
+                    if not postLink in top100Dict:
+                        eliminateIdList.append(postId)
+                        eliminateLinkList.append(line)
+            
+            if postCount <= 0:
+                print ('################# offset={0}, break'.format(offset))
+                break
+            else:
+                print ('################# offset={0}, ok'.format(offset))
+        permalinksIdFilePath = PERMALINKS_PATH + '/id.txt'    # TODO
+        permalinksLinkFilePath = PERMALINKS_PATH + '/link.txt'    # TODO
+        FileHelper.saveFileList(permalinksIdFilePath, eliminateIdList)
+        FileHelper.saveFileList(permalinksLinkFilePath, eliminateLinkList)
+
+    except Exception as err :
+        print(err)    
+
+def deletePost():
+    try:
+        permalinksIdFilePath = PERMALINKS_PATH + '/id.txt'
+        eliminateIdList = FileHelper.loadFileList(permalinksIdFilePath)
+        print ('eliminate len={0}'.format(len(eliminateIdList)))
+        for postID in eliminateIdList:
             req = {
-                'ID': id,
+                'ID': int(postID),
             }
             errorCode, rsp = HttpHelper.post(DELETE_URL, req)
             if errorCode != 'OK' or rsp['errorCode'] != 'OK':
-                raise Exception('delete error, id={0}'.format(id))
+                print ('delete post error, ID={0}'.format(postID))
             else:
-                print ('eleminate post ok, id={0}'.format(id))
+                print ('delete post ok, ID={0}'.format(postID))
                 
     except Exception as err :
         print(err)    
@@ -183,7 +214,7 @@ if __name__=="__main__":
     if len(sys.argv) == 2:
         cmd = sys.argv[1]
     else:
-        cmd = 'import'
+        cmd = 'delete'
     
     if cmd == 'upload':
         uploadKeyPage()
@@ -191,6 +222,10 @@ if __name__=="__main__":
         downloadTrackingLog('diabetes')
     elif cmd == 'import':
         importTrackingLog()
+    elif cmd == 'compare':
+        comparePost()
+    elif cmd == 'delete':
+        deletePost()
     else:
         print ('unknown cmd={0}'.format(cmd))
         
