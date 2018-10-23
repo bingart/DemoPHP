@@ -225,9 +225,6 @@ def generateKeyPage():
                 print ('total=' + str(total))
                 print ('key=' + doc['title'])
                 
-                if doc['state'] != 'GENERATED':
-                    continue
-                
                 foundCount = 0
                 foundList = pageCollection.findPage({'key': doc['title'], 'state': 'PARSED'}, 0, 4)
                 if len(foundList) == 0:
@@ -299,26 +296,17 @@ def uploadKeyPage():
             for doc in docList:
                 if doc['state'] != 'GENERATED':
                     continue
-
-                # search wp by title
-#                 req = {
-#                     'title': doc['finalTitle']
-#                 }
-#                 errorCode, rsp = HttpHelper.post(QUERY_URL, req)
-#                 if errorCode != 'OK':
-#                     raise Exception('query error, url=' + doc['url'])
-#                 if rsp['errorCode'] == 'ERROR':
-#                     doc['state'] = 'DUPED'
-#                     pageCollection.updateOne(doc)
-#                     continue
-                
+              
                 # upload
                 postTitle = doc['finalTitle']
                 postExcerpt = doc['finalDescription']
                 postContent = doc['finalContent']
                 if postTitle == None or postExcerpt == None or postContent == None:
-                    raise Exception('invalid post, key=' + doc['title'])                    
-                
+                    print('invalid post, key=' + doc['title'])                    
+                    doc['state'] = 'GENERATE_ERROR'
+                    pageCollection.updateOne(doc)
+                    continue
+                    
                 req = {
                     'ID': 0,
                     'author': 1,
@@ -332,7 +320,7 @@ def uploadKeyPage():
                     raise Exception('insert error, url=' + doc['url'])
 
                 if rsp['errorCode'] == 'ERROR':
-                    doc['state'] = 'POSTERROR'
+                    doc['state'] = 'POST_ERROR'
                 else:
                     doc['state'] = 'POSTED'
                 pageCollection.updateOne(doc)
@@ -362,7 +350,6 @@ if __name__=="__main__":
         parsePage()
     elif cmd == 'reset':
         resetPage()
-    #parseKey()
     elif cmd == 'generate':
         generateKeyPage()
     elif cmd == 'upload':
