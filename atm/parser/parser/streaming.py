@@ -41,7 +41,6 @@ DELI = '____'
 PERMALINKS_URL = 'http://www.infosoap.com/wp-content/plugins/post-tester/get_all_permalinks.php?offset={0}&limit={1}'
 
 
-
 def downloadTrackingLog(siteName, logDate = None):
     if logDate == None:
         now = datetime.now() - timedelta(days=1)
@@ -158,7 +157,38 @@ def deletePost():
     except Exception as err :
         print(err)    
     
-                                    
+def generateTaskList():
+    try:    
+        # Get all post id and permalinks
+        eliminateLinkList = []
+        for offset in range(0, 6000, 100):
+            url = PERMALINKS_URL.format(offset, 100)
+            statusCode, html, finalUrl = HttpHelper.fetch(url)
+            if statusCode != 200 or html == None:
+                print ('get all post id and permalinks fails, statusCode={0}'.format(statusCode))
+                break
+            lines = html.split('\n')
+            print ('get all post id and links ok, len={0}'.format(len(lines)))
+            postCount = 0
+            for line in lines:
+                kv = line.split(';')
+                if len(kv) == 2:
+                    postCount += 1
+                    postId = kv[0]
+                    postLink = kv[1]
+                    eliminateLinkList.append(postLink + '?atr=1')
+            
+            if postCount <= 0:
+                print ('################# offset={0}, break'.format(offset))
+                break
+            else:
+                print ('################# offset={0}, ok'.format(offset))
+        FileHelper.saveFileList('./task.infosoap.txt', eliminateLinkList)
+
+    except Exception as err :
+        print(err)    
+
+                 
 if __name__=="__main__":
 
     cmd = 'upload'
@@ -175,6 +205,8 @@ if __name__=="__main__":
         comparePost()
     elif cmd == 'delete':
         deletePost()
+    elif cmd == 'task':
+        generateTaskList()
     else:
         print ('unknown cmd={0}'.format(cmd))
         

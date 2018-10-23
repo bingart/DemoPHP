@@ -269,6 +269,8 @@ def generateKeyPage():
 def resetPage():
     try:
         total = 0
+        origState = '*'
+        destState = 'CREATED'
         while True:
             docList = pageCollection.nextPage(20)
             if docList == None or len(docList) == 0:
@@ -277,11 +279,9 @@ def resetPage():
             for doc in docList:
                 
                 total += 1
-                print ('total=' + str(total))
-                print ('url=' + doc['url'])
-
-                doc['state'] = 'CREATED'
-                pageCollection.updateOne(doc)
+                if 'state' in doc and (doc['state'] == origState or doc['state'] == '*'):
+                    doc['state'] = destState
+                    pageCollection.updateOne(doc)
     except Exception as err : 
         print(err)    
 
@@ -320,9 +320,9 @@ def uploadKeyPage():
                     raise Exception('insert error, url=' + doc['url'])
 
                 if rsp['errorCode'] == 'ERROR':
-                    doc['state'] = 'POST_ERROR'
+                    doc['state'] = 'UPLOAD_ERROR'
                 else:
-                    doc['state'] = 'POSTED'
+                    doc['state'] = 'UPLOADED'
                 pageCollection.updateOne(doc)
 
                 total += 1
