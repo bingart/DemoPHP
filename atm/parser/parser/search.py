@@ -12,8 +12,9 @@ from url_helper import UrlHelper
 from parse_helper import ParseHelper
 
 MONGO_HOST = "172.16.40.128:27017,172.16.40.140:27017,172.16.40.141:27017"
-#MONGO_HOST = "127.0.0.1:27017"
+MONGO_HOST = "127.0.0.1:27017"
 MONGO_DATABASE_NAME = "ZDBWordPress"
+MONGO_SEED_COLLECTION = "seed"
 MONGO_KEY_COLLECTION = "key"
 MONGO_PAGE_COLLECTION = "page"
 MONGO_TRACK_COLLECTION = "track"
@@ -23,17 +24,21 @@ SEARCH_PAGE_PATTERN = 'http://healthtopquestions.com/wp-content/plugins/post-tes
 SEARCH_PAGE_PATTERN = 'http://www.infosoap.com/wp-content/plugins/post-tester/bingapi.php?token=P@ssw0rd&t=web&q="{0}"%20wordpress&offset={1}&count={2}'
 BLACK_SITE_LIST = ['webmd.com', 'drugs.com']
 ROOT_PATH = 'E:/NutchData/pages/wordpress'
+INSERT_URL = 'http://www.infosoap.com/wp-content/plugins/post-api/insert_post.php?token=P@ssw0rd'
 
+if not os.path.exists(ROOT_PATH):
+    os.makedirs(ROOT_PATH, exist_ok=True)
+
+seedCollection = MongoHelper(MONGO_HOST, 27017, MONGO_DATABASE_NAME, MONGO_SEED_COLLECTION, "title")
 keyCollection = MongoHelper(MONGO_HOST, 27017, MONGO_DATABASE_NAME, MONGO_KEY_COLLECTION, "title")
 pageCollection = MongoHelper(MONGO_HOST, 27017, MONGO_DATABASE_NAME, MONGO_PAGE_COLLECTION, "url")
     
-
-def loadKey():
-    keyList = FileHelper.loadFileList('d:/key.txt')
+def loadSeed():
+    keyList = FileHelper.loadFileList('./key.txt')
     for key in keyList:
         old = keyCollection.findOneByFilter({'title': key})
         if old == None:
-            keyCollection.insertOne({
+            seedCollection.insertOne({
                 'title': key,
                 'state': 'CREATED',
                 'level': 0,
@@ -44,7 +49,7 @@ def searchKeyByKey():
     try:
         total = 0
         while True:
-            docList = keyCollection.findPage({'state': 'CREATED'}, 0, 20)
+            docList = seedCollection.findPage({'state': 'CREATED'}, 0, 20)
             if docList == None or len(docList) == 0:
                 break
 
@@ -87,7 +92,7 @@ def searchKeyByKey():
                         })
 
                 doc['state'] = 'KEYED'
-                keyCollection.updateOne(doc)
+                seedCollection.updateOne(doc)
                 
                 total += 1
                 print ('total=' + str(total))
@@ -282,7 +287,64 @@ def resetPage():
                 pageCollection.updateOne(doc)
     except Exception as err : 
         print(err)    
+
+def uploadKeyPage():
+    try:
+        total = 0
+        while True:
+            docList = keyCollection.nextPage(20)
+            if docList == None or len(docList) == 0:
+                break
+
+            for doc in docList:
+                if doc['state'] != 'GENERATED':
+                    continue
+
+                # search wp by title
+#                 req = {
+#                     'title': doc['finalTitle']
+#                 }
+#                 errorCode, rsp = HttpHelper.post(QUERY_URL, req)
+#                 if errorCode != 'OK':
+#                     raise Exception('query error, url=' + doc['url'])
+#                 if rsp['errorCode'] == 'ERROR':
+#                     doc['state'] = 'DUPED'
+#                     pageCollection.updateOne(doc)
+#                     continue
                 
+                # upload
+                postTitle = doc['finalTitle']
+                postExcerpt = doc['finalDescription']
+                postContent = doc['finalContent']
+                if postTitle == None or postExcerpt == None or postContent == None:
+                    raise Exception('invalid post, key=' + doc['title'])                    
+                
+                req = {
+                    'ID': 0,
+                    'author': 1,
+                    'title': postTitle,
+                    'excerpt': postExcerpt,
+                    'content': postContent,
+                    'categories': [1]
+                }
+                errorCode, rsp = HttpHelper.post(INSERT_URL, req)
+                if errorCode != 'OK':
+                    raise Exception('insert error, url=' + doc['url'])
+
+                if rsp['errorCode'] == 'ERROR':
+                    doc['state'] = 'POSTERROR'
+                else:
+                    doc['state'] = 'POSTED'
+                pageCollection.updateOne(doc)
+
+                total += 1
+                print ('total=' + str(total))
+                
+                time.sleep(1)
+    
+    except Exception as err :
+        print(err)
+                  
 if __name__=="__main__":
     cmd = 'load'
     if len(sys.argv) == 2:
@@ -291,7 +353,7 @@ if __name__=="__main__":
         cmd = 'generate'
     
     if cmd == 'load':
-        loadKey()
+        loadSeed()
     elif cmd == 'k2k':
         searchKeyByKey()
     elif cmd == 'k2p':
@@ -303,3 +365,5 @@ if __name__=="__main__":
     #parseKey()
     elif cmd == 'generate':
         generateKeyPage()
+    elif cmd == 'upload':
+        uploadKeyPage()

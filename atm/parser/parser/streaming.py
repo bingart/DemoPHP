@@ -20,76 +20,27 @@ MONGO_DATABASE_NAME = "ZDBWordPress"
 MONGO_KEY_COLLECTION = "key"
 MONGO_PAGE_COLLECTION = "page"
 MONGO_TRACK_COLLECTION = "track"
-ROOT_PATH = 'E:/NutchData/Traffic/logs'
+LOGS_PATH = 'E:/NutchData/Traffic/logs'
 BACKUP_PATH = 'E:/NutchData/Traffic/backup'
 PERMALINKS_PATH = 'E:/NutchData/Traffic/permalinks'
+
+if not os.path.exists(LOGS_PATH):
+    os.makedirs(LOGS_PATH, exist_ok=True)
+if not os.path.exists(BACKUP_PATH):
+    os.makedirs(BACKUP_PATH, exist_ok=True)
+if not os.path.exists(PERMALINKS_PATH):
+    os.makedirs(PERMALINKS_PATH, exist_ok=True)
 
 keyCollection = MongoHelper(MONGO_HOST, 27017, MONGO_DATABASE_NAME, MONGO_KEY_COLLECTION, "title")
 pageCollection = MongoHelper(MONGO_HOST, 27017, MONGO_DATABASE_NAME, MONGO_PAGE_COLLECTION, "url")
 trackCollection = MongoHelper(MONGO_HOST, 27017, MONGO_DATABASE_NAME, MONGO_TRACK_COLLECTION, "url")
 trackCollection.createIndex('trackDate')
 QUERY_URL = 'http://www.infosoap.com/wp-content/plugins/post-api/get_post_by_title.php?token=P@ssw0rd'
-INSERT_URL = 'http://www.infosoap.com/wp-content/plugins/post-api/insert_post.php?token=P@ssw0rd'
 DELETE_URL = 'http://www.infosoap.com/wp-content/plugins/post-api/delete_post.php?token=P@ssw0rd'
 DELI = '____'
 PERMALINKS_URL = 'http://www.infosoap.com/wp-content/plugins/post-tester/get_all_permalinks.php?offset={0}&limit={1}'
 
-def uploadKeyPage():
-    try:
-        total = 0
-        while True:
-            docList = keyCollection.nextPage(20)
-            if docList == None or len(docList) == 0:
-                break
 
-            for doc in docList:
-                if doc['state'] != 'GENERATED':
-                    continue
-
-                # search wp by title
-#                 req = {
-#                     'title': doc['finalTitle']
-#                 }
-#                 errorCode, rsp = HttpHelper.post(QUERY_URL, req)
-#                 if errorCode != 'OK':
-#                     raise Exception('query error, url=' + doc['url'])
-#                 if rsp['errorCode'] == 'ERROR':
-#                     doc['state'] = 'DUPED'
-#                     pageCollection.updateOne(doc)
-#                     continue
-                
-                # upload
-                postTitle = doc['finalTitle']
-                postExcerpt = doc['finalDescription']
-                postContent = doc['finalContent']
-                if postTitle == None or postExcerpt == None or postContent == None:
-                    raise Exception('invalid post, key=' + doc['title'])                    
-                
-                req = {
-                    'ID': 0,
-                    'author': 1,
-                    'title': postTitle,
-                    'excerpt': postExcerpt,
-                    'content': postContent,
-                    'categories': [1]
-                }
-                errorCode, rsp = HttpHelper.post(INSERT_URL, req)
-                if errorCode != 'OK':
-                    raise Exception('insert error, url=' + doc['url'])
-
-                if rsp['errorCode'] == 'ERROR':
-                    doc['state'] = 'POSTERROR'
-                else:
-                    doc['state'] = 'POSTED'
-                pageCollection.updateOne(doc)
-
-                total += 1
-                print ('total=' + str(total))
-                
-                time.sleep(1)
-    
-    except Exception as err :
-        print(err)    
 
 def downloadTrackingLog(siteName, logDate = None):
     if logDate == None:
@@ -99,16 +50,16 @@ def downloadTrackingLog(siteName, logDate = None):
     url = 'http://45.79.95.201/logs/{0}.{1}.log'.format(siteName, logDate)
     statusCode, html, finalUrl = HttpHelper.fetch(url)
     if statusCode == 200 and html != None and len(html) > 0:
-        filePath = ROOT_PATH + '/' + logFileName
+        filePath = LOGS_PATH + '/' + logFileName
         FileHelper.writeContent(filePath, html)
         print ('download log file ok, fileName=' + logFileName)
     else:
         print ('download log file error, fileName=' + logFileName)
 
 def importTrackingLog():
-    onlyfiles = [f for f in listdir(ROOT_PATH) if isfile(join(ROOT_PATH, f))]
+    onlyfiles = [f for f in listdir(LOGS_PATH) if isfile(join(LOGS_PATH, f))]
     for f in onlyfiles:
-        logFilePath = ROOT_PATH + '/' + f
+        logFilePath = LOGS_PATH + '/' + f
         lines = FileHelper.loadFileList(logFilePath)
         for line in lines:
             pList = line.split(DELI)
@@ -216,9 +167,7 @@ if __name__=="__main__":
     else:
         cmd = 'delete'
     
-    if cmd == 'upload':
-        uploadKeyPage()
-    elif cmd == 'download':
+    if cmd == 'download':
         downloadTrackingLog('diabetes')
     elif cmd == 'import':
         importTrackingLog()
