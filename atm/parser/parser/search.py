@@ -12,7 +12,7 @@ from url_helper import UrlHelper
 from parse_helper import ParseHelper
 
 MONGO_HOST = "172.16.40.128:27017,172.16.40.140:27017,172.16.40.141:27017"
-MONGO_HOST = "127.0.0.1:27017"
+#MONGO_HOST = "127.0.0.1:27017"
 MONGO_DATABASE_NAME = "ZDBWordPress"
 MONGO_SEED_COLLECTION = "seed"
 MONGO_KEY_COLLECTION = "key"
@@ -33,7 +33,7 @@ seedCollection = MongoHelper(MONGO_HOST, 27017, MONGO_DATABASE_NAME, MONGO_SEED_
 keyCollection = MongoHelper(MONGO_HOST, 27017, MONGO_DATABASE_NAME, MONGO_KEY_COLLECTION, "title")
 pageCollection = MongoHelper(MONGO_HOST, 27017, MONGO_DATABASE_NAME, MONGO_PAGE_COLLECTION, "url")
     
-def loadSeed():
+def loadSeedFromFile():
     keyList = FileHelper.loadFileList('./key.txt')
     for key in keyList:
         old = keyCollection.findOneByFilter({'title': key})
@@ -44,8 +44,30 @@ def loadSeed():
                 'level': 0,
                 'parent': None,
             })
+
+def loadSeedFromKey():
+    try:
+        total = 0
+        while True:
+            docList = keyCollection.nextPage(100)
+            if docList == None or len(docList) == 0:
+                break
+
+            for doc in docList:
+                title = doc['title']
+                if seedCollection.findOneByFilter({'title': title}) == None:
+                    seedCollection.insertOne({
+                        'title': title,
+                        'state': 'CREATED',
+                        'level': 0,
+                        'parent': None
+                    })
+                    total += 1
+                    print ('load seed count=' + str(total))
+    except Exception as err :
+        print(err)    
         
-def searchKeyByKey():
+def searchKeyBySeed():
     try:
         total = 0
         while True:
@@ -338,12 +360,14 @@ if __name__=="__main__":
     if len(sys.argv) == 2:
         cmd = sys.argv[1]
     else:
-        cmd = 'generate'
+        cmd = 's2k'
     
     if cmd == 'load':
-        loadSeed()
-    elif cmd == 'k2k':
-        searchKeyByKey()
+        loadSeedFromFile()
+    elif cmd == 'loadKey':
+        loadSeedFromKey()
+    elif cmd == 's2k':
+        searchKeyBySeed()
     elif cmd == 'k2p':
         searchPageByKey()
     elif cmd == 'parse':
