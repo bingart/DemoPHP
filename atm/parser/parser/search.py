@@ -76,50 +76,61 @@ def searchKeyBySeed():
                 break
 
             for doc in docList:
-                url = SEARCH_KEY_PATTERN.format(doc['title'], 0, 10)
-                errorCode, response = HttpHelper.get(url)
-                if errorCode != 'OK' or response == None:
-                    continue
-
-                if (not 'result' in response):
-                    continue
-                
-                result = response['result']
-                if (not 'relatedSearches' in result) \
-                    or (not 'webPages' in result):
-                    continue
-                
-                relatedSearches = result['relatedSearches']
-                if not 'value' in relatedSearches:
-                    continue
-                
-                webPages = result['webPages']
-                if not 'totalEstimatedMatches' in webPages:
-                    continue
-                
-                value = relatedSearches['value']
-                newKeyList = []
-                for item in value:
-                    if 'text' in item:
-                        newKeyList.append(item['text'])
-                        
-                for key in newKeyList:
-                    if keyCollection.findOneByFilter({'title': key}) == None:
-                        keyCollection.insertOne({
-                            'title': key,
-                            'state': 'CREATED',
-                            'level': doc['level'] + 1,
-                            'parent': doc['title'],
-                            'matched': webPages['totalEstimatedMatches']
-                        })
-
-                doc['state'] = 'KEYED'
-                seedCollection.updateOne(doc)
-                
-                total += 1
-                print ('total=' + str(total))
-                
-                time.sleep(1)
+                try:
+                    print ('seed={0}'.format(doc['title']))                
+                    url = SEARCH_KEY_PATTERN.format(doc['title'], 0, 10)
+                    errorCode, response = HttpHelper.get(url)
+                    if errorCode != 'OK' or response == None:
+                        continue
+    
+                    if (not 'result' in response):
+                        raise Exception('result not found')
+                        continue
+                    
+                    result = response['result']
+                    if (not 'relatedSearches' in result) \
+                        or (not 'webPages' in result):
+                        raise Exception('relatedSearches or webPages not found')
+                        continue
+                    
+                    relatedSearches = result['relatedSearches']
+                    if not 'value' in relatedSearches:
+                        raise Exception('value not found')
+                        continue
+                    
+                    webPages = result['webPages']
+                    if not 'totalEstimatedMatches' in webPages:
+                        raise Exception('totalEstimatedMatches not found')
+                        continue
+                    
+                    value = relatedSearches['value']
+                    newKeyList = []
+                    for item in value:
+                        if 'text' in item:
+                            newKeyList.append(item['text'])
+                            
+                    for key in newKeyList:
+                        if keyCollection.findOneByFilter({'title': key}) == None:
+                            keyCollection.insertOne({
+                                'title': key,
+                                'state': 'CREATED',
+                                'level': doc['level'] + 1,
+                                'parent': doc['title'],
+                                'matched': webPages['totalEstimatedMatches']
+                            })
+    
+                    doc['state'] = 'KEYED'
+                    seedCollection.updateOne(doc)
+                    
+                    total += 1
+                    print ('total={0}, key={1}'.format(total, key))
+                    
+                    time.sleep(1)
+                    
+                except Exception as err :
+                    doc['state'] = 'CLOSED'
+                    seedCollection.updateOne(doc)
+                    print(err)
     
     except Exception as err :
         print(err)    
