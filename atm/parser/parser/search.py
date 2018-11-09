@@ -279,7 +279,7 @@ def generateKeyPage():
                         finalTitle += title
                         finalDescription += description
                     else:
-                        finalTitle += '; ' + title
+                        #finalTitle += '; ' + title
                         finalDescription += '; ' + description
                     finalContent += '<div class="sub-content">' + content + '</div>'
                     
@@ -327,7 +327,11 @@ def uploadKeyPage():
                 break
 
             for doc in docList:
+                total += 1
+                print ('total={0}, title={1}'.format(total, doc['title']))
+                
                 if doc['state'] != 'GENERATED':
+                    print ("invalid state, skip")
                     continue
               
                 # upload
@@ -337,7 +341,7 @@ def uploadKeyPage():
                 if postTitle == None or postExcerpt == None or postContent == None:
                     print('invalid post, key=' + doc['title'])                    
                     doc['state'] = 'GENERATE_ERROR'
-                    pageCollection.updateOne(doc)
+                    keyCollection.updateOne(doc)
                     continue
                     
                 req = {
@@ -352,15 +356,15 @@ def uploadKeyPage():
                 if errorCode != 'OK':
                     raise Exception('insert error, url=' + doc['url'])
 
-                if rsp['errorCode'] == 'ERROR':
-                    doc['state'] = 'UPLOAD_ERROR'
-                else:
+                if rsp['errorCode'] == 'OK':
+                    doc['postID'] = rsp['ID']
                     doc['state'] = 'UPLOADED'
-                pageCollection.updateOne(doc)
+                    print ('upload OK')
+                else:
+                    doc['state'] = 'UPLOAD_ERROR'
+                    print ('upload ERROR')
+                keyCollection.updateOne(doc)
 
-                total += 1
-                print ('total=' + str(total))
-                
                 time.sleep(1)
     
     except Exception as err :
@@ -371,7 +375,7 @@ if __name__=="__main__":
     if len(sys.argv) == 2:
         cmd = sys.argv[1]
     else:
-        cmd = 's2k'
+        cmd = 'upload'
     
     if cmd == 'load':
         loadSeedFromFile()
