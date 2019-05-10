@@ -1,9 +1,10 @@
 <?php
 /*
-Get Post.
+upload post for tran.
 */
 
 # live
+# curl -XPOST -H"Content-Type:application/json" http://heartnlung.com/upload.php -d"{\"title\": \"the title\", \"content\": \"the content\"}"
 
 function _upload_post($req) {
 	try {
