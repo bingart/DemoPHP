@@ -1,10 +1,9 @@
 <?php
 /*
-upload post for tran.
+Get Post.
 */
 
 # live
-# curl -XPOST -H"Content-Type:application/json" http://heartnlung.com/upload.php -d"{\"title\": \"the title\", \"content\": \"the content\"}"
 
 function _upload_post($req) {
 	try {
@@ -13,9 +12,9 @@ function _upload_post($req) {
 		$html = str_replace("{title}", $req->title, $html);
 		$html = str_replace("{content}", $req->content, $html);
 		
-		$uid = uniqid();
+		$uid = md5($req->url);
 		$len = strlen($uid);
-		$prefix = substr($uid, $len - 1, 1);
+		$prefix = substr($uid, 0, 1);
 
 		$dirPath = __DIR__."/".$prefix;
 		if (!file_exists($dirPath)) {
@@ -23,19 +22,22 @@ function _upload_post($req) {
 		}
 
 		$filePath = $dirPath.'/'.$uid.".html";
+#echo 'filePath='.$filePath;
 		$fileUrl = $_SERVER['REQUEST_SCHEME']."://".$_SERVER['HTTP_HOST'].str_replace("upload.php", "", $_SERVER['REQUEST_URI']).$prefix."/".$uid.".html";
 		file_put_contents($filePath, $html);
 		
 		return array(
 			"errorCode" => "OK",
 			"errorMessage" => "",
-			"url" => $fileUrl,
+			"url" => $req->url,
+			"fileUrl" => $fileUrl,
 		);
 	} catch (Exception $e) {
 		return array(
 			"errorCode" => "ERROR",
 			"errorMessage" => $e->getMessage(),
-			"url" => "",
+			"url" => $req->url,
+			"fileUrl" => "",
 		);
 	}	
 }
